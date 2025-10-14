@@ -1,0 +1,487 @@
+# ================================
+#        Legendary Crate
+# ================================
+
+# Display settings
+display-name: "&6Legendary Crate"
+
+# Hologram settings
+hologram:
+  lines:
+    - "&e>&6>&e> &6&lLEGENDARY CRATE &e<&6<&e<"
+    - "&7Obtain these from our /store"
+    - "&7You have &f%crates_keys_legendary% &7keys"
+  y-offset: 2.0
+
+# Prizes configuration
+prizes:
+  # ================================
+  #          TOKEN REWARDS
+  # ================================
+  tokens-150k:
+    name: "&e&l150,000 &fTokens"
+    commands:
+      - "tokens give %player% 150000"
+    chance: 43
+    item:
+      type: "GHAST_TEAR"
+      amount: 1
+      damage: 0
+      name: "&e&l150,000 &fTokens"
+      lore: []
+      glowing: true
+    announce: true
+
+  tokens-300k:
+    name: "&e&l300,000 &fTokens"
+    commands:
+      - "tokens give %player% 300000"
+    chance: 40
+    item:
+      type: "GHAST_TEAR"
+      amount: 1
+      damage: 0
+      name: "&e&l300,000 &fTokens"
+      lore: []
+      glowing: true
+    announce: true
+
+  # ================================
+  #           POUCH REWARDS
+  # ================================
+  exp-pouch-t2:
+    name: "&8[&e&lEXP&8] &fPouch Tier &eII"
+    commands:
+      - "advancedcrates pouch give %player% ExpTier2 4"
+    chance: 38
+    item:
+      type: "SKULL_ITEM"
+      amount: 4
+      damage: 3
+      name: "&8[&e&lEXP&8] &fPouch Tier &eII"
+      lore:
+        - ""
+        - "&fPlace the EXP Pouch to receive a"
+        - "&fMystery reward of &eExperience!"
+        - ""
+        - "&6» &eReward"
+        - "&6» &f1,000 &f- &f10,000 &e&lEXP"
+        - ""
+        - "&6(&e( &fPlace down to open! &e)&6)"
+      glowing: false
+    announce: false
+
+  money-pouch-t3:
+    name: "&8[&a&lMoney&8] &fPouch Tier &cIII"
+    commands:
+      - "advancedcrates pouch give %player% MoneyTier3 2"
+    chance: 38
+    item:
+      type: "SKULL_ITEM"
+      amount: 2
+      damage: 3
+      name: "&8[&a&lMoney&8] &fPouch Tier &cIII"
+      lore:
+        - ""
+        - "&fPlace the Money Pouch to receive a"
+        - "&fMystery reward of &amoney!"
+        - ""
+        - "&6» &eReward"
+        - "&6» &f$&a3,000,000 &f- &f$&a5,000,000"
+        - ""
+        - "&6(&e( &fPlace down to open! &e)&6)"
+      glowing: true
+    announce: false
+
+  # ================================
+  #            CRATE KEYS
+  # ================================
+  cosmetic-key:
+    name: "&6&lCosmetic Key"
+    commands:
+      - "crates give %player% cosmetics 1"
+    chance: 20
+    item:
+      type: "TRIPWIRE_HOOK"
+      amount: 1
+      damage: 0
+      name: "&6&lCosmetic Key"
+      lore: []
+      glowing: true
+    announce: false
+
+  legendary-keys:
+    name: "&6&lLegendary Key"
+    commands:
+      - "crates give %player% legendary 2"
+    chance: 20
+    item:
+      type: "TRIPWIRE_HOOK"
+      amount: 2
+      damage: 0
+      name: "&6&lLegendary Key"
+      lore: []
+      glowing: true
+    announce: false
+
+  # ================================
+  #          KIT VOUCHERS
+  # ================================
+  tier5-kit:
+    name: "&8[&4TierV&8] &fKit Voucher"
+    commands:
+      - "iv give %player% TierVKit 1"
+    chance: 35
+    item:
+      type: "PAPER"
+      amount: 1
+      damage: 0
+      name: "&8[&4TierV&8] &fKit Voucher"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&4TierV&8] &fKit Voucher."
+      glowing: true
+    announce: false
+
+  nomad-gkit-temp:
+    name: "&8[&6&lNomad&8] &fGkit Voucher &o&8(&410d&8)"
+    commands:
+      - "iv give %player% NomadTemp 1"
+    chance: 15
+    item:
+      type: "BOOK"
+      amount: 1
+      damage: 0
+      name: "&8[&6&lNomad&8] &fGkit Voucher &o&8(&410d&8)"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&6&lNomad&8] &fGKit Voucher &o&8(&410d&8)."
+      glowing: true
+    announce: false
+
+  bard-gkit-temp:
+    name: "&8[&e&lBard&8] &fGkit Voucher &o&8(&410d&8)"
+    commands:
+      - "iv give %player% BardTemp 1"
+    chance: 15
+    item:
+      type: "BOOK"
+      amount: 1
+      damage: 0
+      name: "&8[&e&lBard&8] &fGkit Voucher &o&8(&410d&8)"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&e&lBard&8] &fGkit Voucher &o&8(&410d&8)."
+      glowing: false
+    announce: false
+
+  # ================================
+  #         RANK VOUCHERS
+  # ================================
+  tier4-rank-temp:
+    name: "&8[&cTierIV&8] &fRank Voucher &o&8(&410d&8)"
+    commands:
+      - "iv give %player% TierIVTemp 1"
+    chance: 7
+    item:
+      type: "BOOK"
+      amount: 1
+      damage: 0
+      name: "&8[&cTierIV&8] &fRank Voucher &o&8(&410d&8)"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&cTierIV&8] &fRank Voucher &o&8(&410d&8)."
+      glowing: false
+    announce: true
+
+  # ================================
+  #            SPAWNERS
+  # ================================
+  spawner-bundle:
+    name: "&8[&6&lSpawner Bundle&8]"
+    commands:
+      - "iv give %player% SpawnerBundle 1"
+    chance: 10
+    item:
+      type: "SPAWNER"
+      amount: 1
+      damage: 0
+      name: "&8[&6&lSpawner Bundle&8]"
+      lore:
+        - ""
+        - "&8» &f8x &e&lVillager &fSpawner"
+        - "&8» &f16x &e&lIron Golem &fSpawner"
+        - "&8» &f24x &e&lCreeper &fSpawner"
+        - ""
+        - "&8(&6Right Click&8) &fto open."
+      glowing: true
+    announce: true
+
+  # ================================
+  #           SPECIAL ITEMS
+  # ================================
+  arachne-eye:
+    name: "&8&lArachne &2&lVenomweaver's &7&lEye"
+    commands:
+      - "boss give %player% arachne-venomweaver 1"
+    chance: 25
+    item:
+      type: "SPIDER_EYE"
+      amount: 1
+      damage: 0
+      name: "&8&lArachne &2&lVenomweaver's &7&lEye"
+      lore:
+        - ""
+        - "&fUse this Venomous Eye to summon the &8&lArachne &2&lVenomweaver"
+        - "&7Difficulty: &4&lINSANE"
+      glowing: true
+    announce: true
+
+  crimson-executioner:
+    name: "&4&lCrimson &c&lExecutioner &7&lLeg"
+    commands:
+      - "boss give %player% crimson-executioner 1"
+    chance: 25
+    item:
+      type: "ROTTEN_FLESH"
+      amount: 1
+      damage: 0
+      name: "&4&lCrimson &c&lExecutioner &7&lLeg"
+      lore:
+        - ""
+        - "&fUse this ancient piece of Rotten Meat to summon the &4&lCrimson &c&lExecutioner"
+        - "&7Difficulty: &4&lINSANE"
+      glowing: true
+    announce: true
+
+  darksteel-behemoth:
+    name: "&8&lDarkSteel &5&lBehemoth's &7&lFallen Rose"
+    commands:
+      - "boss give %player% darksteel-behemoth 1"
+    chance: 10
+    item:
+      type: "POPPY"
+      amount: 1
+      damage: 0
+      name: "&8&lDarkSteel &5&lBehemoth's &7&lFallen Rose"
+      lore:
+        - ""
+        - "&fUse this Fallen Rose to summon the &8&lDarkSteel &5&lBehemoth"
+        - "&7Difficulty: &4&lINSANE"
+      glowing: true
+    announce: true
+
+  lord-of-bones:
+    name: "&f&lLord Of Bone's &7&lArm"
+    commands:
+      - "boss give %player% lord-of-bones 1"
+    chance: 10
+    item:
+      type: "BONE"
+      amount: 1
+      damage: 0
+      name: "&f&lLord Of Bone's &7&lArm"
+      lore:
+        - ""
+        - "&7Use this Ancient Bone to summon the &f&lLord Of Bones"
+        - "&7Difficulty: &4&lINSANE"
+      glowing: true
+    announce: true
+
+  damage-set:
+    name: "&8[&4&lDamage&8] &fSet Voucher"
+    commands:
+      - "iv give %player% DamageKit 1"
+    chance: 10
+    item:
+      type: "BOOK"
+      amount: 1
+      damage: 0
+      name: "&8[&4&lDamage&8] &fSet Voucher"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&4&lDamage&8] &fSet Voucher"
+      glowing: true
+    announce: false
+
+  patch-set:
+    name: "&8[&2&lPatch&8] &fSet Voucher"
+    commands:
+      - "iv give %player% PatchingKit 1"
+    chance: 15
+    item:
+      type: "BOOK"
+      amount: 1
+      damage: 0
+      name: "&8[&2&lPatch&8] &fSet Voucher"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&2&lPatch&8] &fSet Voucher"
+      glowing: true
+    announce: false
+
+  ice-koth:
+    name: "&bFrozen &fRelic &8[&b&lIce&8]"
+    commands:
+      - "iv give %player% Icekoth 1"
+    chance: 7
+    item:
+      type: "PACKED_ICE"
+      amount: 1
+      damage: 0
+      name: "&bFrozen &fRelic &8[&b&lIce&8]"
+      lore:
+        - ""
+        - "&fRight click to start a &bIce &fKoth!"
+        - "&fThis Koth is at /warp Arena"
+        - ""
+        - "                          &4&lWARNING!!!"
+        - "&cYou can start this while other koths are active!"
+      glowing: true
+    announce: true
+
+  monthly-crate:
+    name: "&f&l✧&e&l✧&6&l✧ &e&l&nM&f&l&nO&e&l&nN&f&l&nT&e&l&nH&f&l&nL&e&l&nY &e&l&nC&f&l&nR&e&l&nA&f&l&nT&e&l&nE&f&l: &6&lMINEAGE ✧&e&l✧&f&l✧"
+    commands:
+      - "advancedcrates give %player% mineage 1"
+    chance: 4
+    item:
+      type: "ENDER_CHEST"
+      amount: 1
+      damage: 0
+      name: "&f&l✧&e&l✧&6&l✧ &e&l&nM&f&l&nO&e&l&nN&f&l&nT&e&l&nH&f&l&nL&e&l&nY &e&l&nC&f&l&nR&e&l&nA&f&l&nT&e&l&nE&f&l: &6&lMINEAGE ✧&e&l✧&f&l✧"
+      lore:
+        - "&fUnlocked at &e&nstore.mineage.net"
+        - "&for through &e/events"
+        - ""
+        - "§e§l&nNORMAL REWARDS"
+        - '§7'
+        - '§6&l┃ §2$§a1,000,000'
+        - '§6&l┃ §2$§a5,000,000'
+        - '§6&l┃ §2$§a10,000,000'
+        - '§6&l┃ §e25,000 §fTokens'
+        - '§6&l┃ §e50,000 §fTokens'
+        - '§6&l┃ §fx6 §8Common &7Keys'
+        - '§6&l┃ §fx3 §dRare &7Keys'
+        - '§6&l┃ §fx1 §6Cosmetic &7Key'
+        - '§6&l┃ §fx1 &8[&6&lM&e&lo&6&ln&e&lt&6&lh&e&ll&6&ly&e&lM&6&la&e&ln&6&li&e&la&6&lc&8] &fTag'
+        - '§6&l┃ §fx32 §e§lBlaze §fSpawner'
+        - '§6&l┃ §fx12 §e§lCreeper §fSpawner'
+        - '§6&l┃ §fx8 §e§lIronGolem §fSpawner'
+        - '§6&l┃ §fx4 §e§lVillager §fSpawner'
+        - '§6&l┃ &8[§4TierV&8] §fKit Voucher §o§8(§cOne-Time§8)'
+        - '§6&l┃ &8[§e§6&lNomad&8] §fKit Voucher §o§8(§cOne-Time§8)'
+        - '§6&l┃ &8[&e&lBard&8] §fKit Voucher §o§8(§cOne-Time§8)'
+        - '§6&l┃ §4Fixhand §fVoucher §o§8(§410d§8)'
+        - '§6&l┃ §4FixAll §fVoucher §o§8(§410d§8)'
+        - '§6&l┃ §8[§6TierIII§8] §fRank Voucher §o§8(§410d§8)'
+        - '§6&l┃ §8[§cTierIV§8] §fRank Voucher §o§8(§410d§8)'
+        - '§7'
+        - '§e§l§nFINAL REWARDS'
+        - '§7'
+        - '§6&l┃ &fx3 &6Legendary &7Key'
+        - '§6&l┃ &bFrozen &fRelic &8[&b&lIce&8]'
+        - '§6&l┃ &8[§4§lDamage&8] §fGKit Voucher §o§8(§cOne-Time§8)'
+        - '§6&l┃ &8[§2§lPatch&8] §fGKit Voucher §o§8(§cOne-Time§8)'
+        - '§6&l┃ §4FixAll §fVoucher §o§8(§4&lPERM§8)'
+        - '§6&l┃ &8[&e&lBard&8] &fGkit Voucher &8(&4&lPERM&8)'
+        - '§6&l┃ &8[&6&lNomad&8] &fGkit Voucher &8(&4&lPERM&8)'
+        - '§6&l┃ §8[§cTierIV§8] §fRank Voucher §o§8(§4&lPERM§8)'
+        - '§6&l┃ §8[§4TierV§8] §fRank Voucher §o§8(§4&lPERM§8)'
+        - '§8'
+        - '§7&oThis crate grants 8 random rewards from'
+        - '§7&othe prize selection listed above, and 1 final reward.'
+      glowing: false
+    announce: true
+
+  mineage-premium:
+    name: "&8[&6&lMINEAGE&8] &e&lPREMIUM &fPass"
+    commands:
+      - "iv give %player% Pass 1"
+    chance: 4
+    item:
+      type: "ENCHANTED_BOOK"
+      amount: 1
+      damage: 0
+      name: "&8[&6&lMINEAGE&8] &e&lPREMIUM &fPass"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&6&lMINEAGE&8] &e&lPREMIUM &fPass"
+      glowing: false
+    announce: true
+
+  # ================================
+  #            PVP ITEMS
+  # ================================
+  katana:
+    name: "&8[&3&lK&b&la&3&lt&b&la&3&ln&b&la&8]"
+    commands:
+      - "kit katana %player%"
+    chance: 15
+    item:
+      type: "IRON_SWORD"
+      amount: 1
+      damage: 0
+      name: "&8[&3&lK&b&la&3&lt&b&la&3&ln&b&la&8]"
+      lore:
+        - "&7Sharpness VI"
+        - "&7Unbreaking III"
+        - "&7Fire Aspect II"
+        - "&4&lCaged I"
+        - "&2&lInfected I"
+      glowing: true
+    announce: true
+
+  redirect-rod:
+    name: "&8[&c&lRedirect Rod&8]"
+    commands:
+      - "pvpitems give %player% redirect 1"
+    chance: 8
+    item:
+      type: "BLAZE_ROD"
+      amount: 1
+      damage: 0
+      name: "&8[&c&lRedirect Rod&8]"
+      lore:
+        - "&fA &cRedirecting Rod &fthat snaps your"
+        - "&ftarget's screen &c180 &fdegrees on hit"
+        - ""
+        - "&7Cooldown: &c120s"
+      glowing: true
+    announce: true
+
+  scrambler:
+    name: "&8[&6&lScrambler&8]"
+    commands:
+      - "pvpitems give %player% inventorymix 1"
+    chance: 7
+    item:
+      type: "COMPASS"
+      amount: 1
+      damage: 0
+      name: "&8[&6&lScrambler&8]"
+      lore:
+        - "&fA chaotic device that &6instantly shuffles &fyour"
+        - "&ftarget's &6hotbar &fslots on hit."
+        - ""
+        - "&7Cooldown: &6300s"
+      glowing: true
+    announce: true
+
+  anti-gapple:
+    name: "&8[&e&lAnti-Gapple&8]"
+    commands:
+      - "pvpitems give %player% anti_gapple 1"
+    chance: 7
+    item:
+      type: "GOLD_INGOT"
+      amount: 1
+      damage: 0
+      name: "&8[&e&lAnti-Gapple&8]"
+      lore:
+        - "&fA &edisruptive &fitem that temporarily disables your"
+        - "&ftarget's ability to eat &egapples &ffor &e60 &fseconds."
+        - ""
+        - "&7Cooldown: &e600s"
+      glowing: true
+    announce: true

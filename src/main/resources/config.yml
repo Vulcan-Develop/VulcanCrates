@@ -1,0 +1,32 @@
+config-version: 1 # Do not touch this
+
+# ================================
+#        Crates Configuration
+# ================================
+
+# Command settings
+commands:
+  aliases:
+    - "crate"
+
+# Crate block settings
+crate-block:
+  material: "CHEST"
+  auto-restore-on-startup: true
+  auto-place-on-set: true
+  replaceable-blocks:
+    - "AIR"
+    - "GRASS"
+    - "TALL_GRASS"
+    - "WATER"
+    - "LAVA"
+
+# Messages
+messages:
+  prefix: "&6[Crates]"
+  crate-rolled-reward-announce: "%prefix% &r%player% &7just rolled a &6%prizeName% &7from a %crateType%&7!"
+  crate-rolled-reward: "%prefix% &7You won &6%prizeName%&7!"
+  crate-block-placed: "%prefix% &7%crateType% crate successfully placed at your location."
+  crate-removed: "%prefix% &7%crateType% crate location removed and chest destroyed."
+  no-keys: "%prefix% &7Purchase crate keys to open this crate!"
+  admin-test-prize: "&a[ADMIN TEST] &7You received the prize: &6%prizeName%"

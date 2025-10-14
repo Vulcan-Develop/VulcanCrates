@@ -1,0 +1,442 @@
+# ========================================
+#             Common Crate
+# ========================================
+
+# Display settings
+display-name: "&7Common Crate"
+
+# Hologram settings
+hologram:
+  lines:
+    - "&f>&7>&f> &7&lCommon Crate &f<&7<&f<"
+    - "&7Obtain these from /vote"
+    - "&7You have &f%crates_keys_common% &7keys"
+  y-offset: 2.0
+
+# Prizes configuration
+prizes:
+  # ================================
+  #           MONEY REWARDS
+  # ================================
+  money-150k:
+    name: "&2&l$&a&l150,000"
+    commands:
+      - "eco give %player% 150000"
+    chance: 45
+    item:
+      type: "EMERALD"
+      amount: 1
+      damage: 0
+      name: "&2&l$&a&l150,000"
+      lore: []
+      glowing: true
+    announce: false
+
+  money-250k:
+    name: "&2&l$&a&l250,000"
+    commands:
+      - "eco give %player% 250000"
+    chance: 42
+    item:
+      type: "EMERALD"
+      amount: 1
+      damage: 0
+      name: "&2&l$&a&l250,000"
+      lore: []
+      glowing: true
+    announce: false
+
+  # ================================
+  #          TOKEN REWARDS
+  # ================================
+  tokens-7500:
+    name: "&e&l7,500 &fTokens"
+    commands:
+      - "tokens give %player% 7500"
+    chance: 45
+    item:
+      type: "GHAST_TEAR"
+      amount: 1
+      damage: 0
+      name: "&e&l7,500 &fTokens"
+      lore: []
+      glowing: true
+    announce: true
+
+  tokens-15k:
+    name: "&e&l15,000 &fTokens"
+    commands:
+      - "tokens give %player% 15000"
+    chance: 42
+    item:
+      type: "GHAST_TEAR"
+      amount: 1
+      damage: 0
+      name: "&e&l15,000 &fTokens"
+      lore: []
+      glowing: true
+    announce: true
+
+  # ================================
+  #           POUCH REWARDS
+  # ================================
+  money-pouch-t1:
+    name: "&8[&a&lMoney&8] &fPouch Tier &aI"
+    commands:
+      - "advancedcrates pouch give %player% MoneyTier1 1"
+    chance: 40
+    item:
+      type: "SKULL_ITEM"
+      amount: 1
+      damage: 3
+      name: "&8[&a&lMoney&8] &fPouch Tier &aI"
+      lore:
+        - ""
+        - "&fPlace the Money Pouch to receive a"
+        - "&fMystery reward of &amoney!"
+        - ""
+        - "&6» &eReward"
+        - "&6» &f$&a100,000 &f- &f$&a400,000"
+        - ""
+        - "&6(&e( &fPlace down to open! &e)&6)"
+      glowing: true
+    announce: false
+
+  exp-pouch-t1:
+    name: "&8[&e&lEXP&8] &fPouch Tier &aI"
+    commands:
+      - "advancedcrates pouch give %player% ExpTier1 1"
+    chance: 40
+    item:
+      type: "SKULL_ITEM"
+      amount: 1
+      damage: 3
+      name: "&8[&e&lEXP&8] &fPouch Tier &aI"
+      lore:
+        - ""
+        - "&fPlace the EXP Pouch to receive a"
+        - "&fMystery reward of &eExperience!"
+        - ""
+        - "&6» &eReward"
+        - "&6» &f100 &f- &f1000 &e&lEXP"
+        - ""
+        - "&6(&e( &fPlace down to open! &e)&6)"
+      glowing: true
+    announce: false
+
+  # ================================
+  #          KIT VOUCHERS
+  # ================================
+  tier1-kit:
+    name: "&8[&aTierI&8] &fKit Voucher"
+    commands:
+      - "iv give %player% TierIKit 1"
+    chance: 30
+    item:
+      type: "PAPER"
+      amount: 1
+      damage: 0
+      name: "&8[&aTierI&8] &fKit Voucher"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&aTierI&8] &fKit Voucher."
+      glowing: true
+    announce: false
+
+  tier2-kit:
+    name: "&8[&eTierII&8] &fKit Voucher"
+    commands:
+      - "iv give %player% TierIIKit 1"
+    chance: 28
+    item:
+      type: "PAPER"
+      amount: 1
+      damage: 0
+      name: "&8[&eTierII&8] &fKit Voucher"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&eTierII&8] &fKit Voucher."
+      glowing: true
+    announce: false
+
+  tier3-kit:
+    name: "&8[&6TierIII&8] &fKit Voucher"
+    commands:
+      - "iv give %player% TierIIIKit 1"
+    chance: 25
+    item:
+      type: "PAPER"
+      amount: 1
+      damage: 0
+      name: "&8[&6TierIII&8] &fKit Voucher"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&6TierIII&8] &fKit Voucher."
+      glowing: true
+    announce: false
+
+  bard-kit:
+    name: "&8[&e&lBard&8] &fKit Voucher"
+    commands:
+      - "iv give %player% BardKit 1"
+    chance: 25
+    item:
+      type: "PAPER"
+      amount: 1
+      damage: 0
+      name: "&8[&e&lBard&8] &fKit Voucher"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&e&lBard&8] &fKit Voucher."
+      glowing: true
+    announce: false
+
+  nomad-kit:
+    name: "&8[&6&lNomad&8] &fKit Voucher"
+    commands:
+      - "iv give %player% NomadKit 1"
+    chance: 30
+    item:
+      type: "PAPER"
+      amount: 1
+      damage: 0
+      name: "&8[&6&lNomad&8] &fKit Voucher"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&6&lNomad&8] &fKit Voucher."
+      glowing: true
+    announce: false
+
+  # ================================
+  #         RANK VOUCHERS
+  # ================================
+  tier1-rank:
+    name: "&8[&aTierI&8] &fRank Voucher &o&8(&410d&8)"
+    commands:
+      - "iv give %player% TierITemp 1"
+    chance: 15
+    item:
+      type: "BOOK"
+      amount: 1
+      damage: 0
+      name: "&8[&aTierI&8] &fRank Voucher &o&8(&410d&8)"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &8[&aTierI&8] &fRank Voucher &o&8(&410d&8)."
+      glowing: false
+    announce: false
+
+  # ================================
+  #            CRATE KEYS
+  # ================================
+  common-keys:
+    name: "&7&lCommon Key"
+    commands:
+      - "crates give %player% common 3"
+    chance: 25
+    item:
+      type: "TRIPWIRE_HOOK"
+      amount: 3
+      damage: 0
+      name: "&7&lCommon Key"
+      lore: []
+      glowing: true
+    announce: false
+
+  rare-keys:
+    name: "&d&lRare Key"
+    commands:
+      - "crates give %player% rare 2"
+    chance: 22
+    item:
+      type: "TRIPWIRE_HOOK"
+      amount: 2
+      damage: 0
+      name: "&d&lRare Key"
+      lore: []
+      glowing: true
+    announce: false
+
+  # ================================
+  #         UTILITY VOUCHERS
+  # ================================
+  fixhand-temp:
+    name: "&4&lFix Hand &fVoucher &o&8(&410d&8)"
+    commands:
+      - "iv give %player% FixhandTemp 1"
+    chance: 20
+    item:
+      type: "ANVIL"
+      amount: 1
+      damage: 0
+      name: "&4&lFix Hand &fVoucher &o&8(&410d&8)"
+      lore:
+        - ""
+        - "&8(&c&l!&8) &cRight click to redeem &4&lFix Hand &fVoucher &o&8(&410d&8)."
+      glowing: true
+    announce: false
+
+  # ================================
+  #           SPECIAL ITEMS
+  # ================================
+  throwable-creeper-eggs:
+    name: "&a&lThrowable Creeper Eggs"
+    commands:
+      - "throwableceggs give %player% 8"
+    chance: 40
+    item:
+      type: "CREEPER_SPAWN_EGG"
+      amount: 8
+      damage: 50
+      name: "&a&lThrowable Creeper Eggs"
+      lore: []
+      glowing: true
+    announce: false
+
+  sand-wand:
+    name: "&f*&e*&f* &e&nSand Wand &f*&e*&f*"
+    commands:
+      - "trenches give %player% Sand-Wand 1"
+    chance: 30
+    item:
+      type: "GOLDEN_SHOVEL"
+      amount: 1
+      damage: 0
+      name: "&f*&e*&f* &e&nSand Wand &f*&e*&f*"
+      lore:
+        - ""
+        - "&8» &fRight click to remove a sand pillar."
+      glowing: false
+    announce: false
+
+  tray-pick:
+    name: "&f*&e*&f* &8(&e11x11&8)&f&n Tray Pick &f*&e*&f*"
+    commands:
+      - "trenches give %player% tray 1"
+    chance: 35
+    item:
+      type: "WOODEN_PICKAXE"
+      amount: 1
+      damage: 0
+      name: "&f*&e*&f* &8(&e11x11&8)&f&n Tray Pick &f*&e*&f*"
+      lore:
+        - ""
+        - "&8» &fThis pickaxe will remove certain blocks"
+        - "&8» &fin a &e(11x11) &fradius."
+      glowing: true
+    announce: false
+
+  trench-pick:
+    name: "&f*&e*&f* &8(&e11x11&8)&f&n Trench Pick &f*&e*&f*"
+    commands:
+      - "trenches give %player% trench 1"
+    chance: 35
+    item:
+      type: "DIAMOND_PICKAXE"
+      amount: 1
+      damage: 0
+      name: "&f*&e*&f* &8(&e11x11&8)&f&n Trench Pick &f*&e*&f*"
+      lore:
+        - ""
+        - "&8» &fThis pickaxe will remove all blocks"
+        - "&8» &fin a &e(11x11) &fradius."
+      glowing: true
+    announce: false
+
+  # ================================
+  #            SPAWNERS
+  # ================================
+  blaze-spawners:
+    name: "&e&lBlaze &fSpawner"
+    commands:
+      - "ss give %player% Blaze 8"
+    chance: 35
+    item:
+      type: "SPAWNER"
+      amount: 8
+      damage: 0
+      name: "&e&lBlaze &fSpawner"
+      lore: []
+      glowing: false
+    announce: false
+
+  creeper-spawners:
+    name: "&e&lCreeper &fSpawner"
+    commands:
+      - "ss give %player% Creeper 3"
+    chance: 35
+    item:
+      type: "SPAWNER"
+      amount: 3
+      damage: 0
+      name: "&e&lCreeper &fSpawner"
+      lore: []
+      glowing: false
+    announce: false
+
+  # ================================
+  #         CHUNK BUSTERS
+  # ================================
+  chunk-busters:
+    name: "&6&lChunk Buster &8(&e1x1&8)"
+    commands:
+      - "chunkbuster give %player% 8 1"
+    chance: 25
+    item:
+      type: "ENDER_PORTAL_FRAME"
+      amount: 8
+      damage: 0
+      name: "&6&lChunk Buster &8(&e1x1&8)"
+      lore:
+        - "&7Placing this will demolish"
+        - "&7the chunk it is in."
+        - ""
+        - "&6&l* &eRadius: &f1x1"
+        - "&6&l* &eBlacklisted blocks:"
+        - "   &fSpawners and Chest"
+        - ""
+        - "&cCaution: &7If a chunkbuster"
+        - "&7is placed incorrectly, the"
+        - "&7chunk will not be rolled back."
+      glowing: false
+    announce: false
+
+  # ================================
+  #            PVP ITEMS
+  # ================================
+  switcherball:
+    name: "&8[&b&lSwitcherball&8]"
+    commands:
+      - "pvpitems give %player% switcher 1"
+    chance: 15
+    item:
+      type: "SNOWBALL"
+      amount: 1
+      damage: 0
+      name: "&8[&b&lSwitcherball&8]"
+      lore:
+        - "&fA throwable item that &binstantly &fswaps"
+        - "&fyour &bposition &fwith the &bplayer &fit hits."
+        - ""
+        - "&7Cooldown: &b30s"
+      glowing: true
+    announce: false
+
+  throwable-webs:
+    name: "&8[&f&lThrowable Webs&8]"
+    commands:
+      - "pvpitems give %player% throwable_cobweb 1"
+    chance: 8
+    item:
+      type: "COBWEB"
+      amount: 1
+      damage: 0
+      name: "&8[&f&lThrowable Webs&8]"
+      lore:
+        - "&fA tactical item that deploys a &7(3x3) &fweb"
+        - "&fthat traps players in place."
+        - ""
+        - "&7Web Duration: &f30s"
+        - "&7Cooldown: &f20s"
+      glowing: true
+    announce: false

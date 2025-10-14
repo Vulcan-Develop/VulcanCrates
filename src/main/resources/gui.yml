@@ -1,0 +1,127 @@
+config-version: 1 # Do not touch this
+
+# ================================
+#        GUI Configuration
+# ================================
+
+# Crate Preview GUI
+crate-preview:
+  rows: 6
+  title: '&eCrates &8| %crate%'
+
+  # Prize slots configuration (where prizes are displayed)
+  previewSlots:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 19
+    - 20
+    - 21
+    - 22
+    - 23
+    - 24
+    - 25
+    - 28
+    - 29
+    - 30
+    - 31
+    - 32
+    - 33
+    - 34
+    - 37
+    - 38
+    - 39
+    - 40
+    - 41
+    - 42
+    - 43
+
+  # Navigation buttons
+  prev:
+    slot: 48
+    type: ARROW
+    name: '&aPrevious Page'
+    lore:
+      - '&7Click to go to previous page'
+
+  next:
+    slot: 50
+    type: ARROW
+    name: '&aNext Page'
+    lore:
+      - '&7Click to go to next page'
+
+  close:
+    slot: 49
+    type: BARRIER
+    name: '&cClose'
+    lore:
+      - '&7Click to close this menu'
+
+  # Filler items
+  fillers:
+    fill1:
+      type: STAINED_GLASS_PANE
+      glowing: false
+      name: '&c'
+      damage: 7
+      lore: []
+      slots:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+        - 11
+        - 12
+        - 13
+        - 14
+        - 15
+        - 16
+        - 17
+        - 18
+        - 19
+        - 20
+        - 21
+        - 22
+        - 23
+        - 24
+        - 25
+        - 26
+        - 27
+        - 28
+        - 29
+        - 30
+        - 31
+        - 32
+        - 33
+        - 34
+        - 35
+        - 36
+        - 37
+        - 38
+        - 39
+        - 40
+        - 41
+        - 42
+        - 43
+        - 44
+        - 45
+        - 46
+        - 47
+        - 48
+        - 49
+        - 50
+        - 51
+        - 52
+        - 53
