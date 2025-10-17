@@ -43,12 +43,7 @@ All commands start with `/crate` (or `/crates` if you prefer):
 
 ## Installation
 
-1. Download the latest release
-2. Drop the JAR file into your server's `plugins` folder
-3. Make sure you have VulcanLib, ProtocolLib, and DecentHolograms installed
-4. Restart your server
-5. Edit the configs in `plugins/VulcanCrates/` to set up your crates
-6. Use `/crate reload` to apply your changes
+This plugin is free through the Vulcan Loader found in the client panel [Here](https://vulcandev.net/).
 
 ## Setting Up Your First Crate
 

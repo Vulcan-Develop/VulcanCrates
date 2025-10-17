@@ -13,7 +13,6 @@ import java.util.Set;
  * Main crate command handler that delegates to various subcommands.
  */
 public class CrateCommand implements FeatureCommand {
-
     private final VulcanCrates plugin;
     private final GiveCommand giveCommand;
     private final GiveAllCommand giveAllCommand;

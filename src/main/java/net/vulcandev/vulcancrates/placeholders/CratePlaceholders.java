@@ -16,11 +16,6 @@ import net.vulcandev.vulcancrates.objects.PlayerData;
  */
 public class CratePlaceholders extends PlaceholderExpansion {
     private final VulcanCrates plugin;
-
-    /**
-     * Creates a new placeholder expansion.
-     * @param plugin the plugin instance
-     */
     public CratePlaceholders(VulcanCrates plugin) {
         this.plugin = plugin;
     }

@@ -12,10 +12,7 @@ import java.util.Map;
  * This data is persisted to disk and loaded on server startup.
  */
 public class PlayerData {
-    /** Map of crate names to key counts for each crate type */
     private final Map<String, Integer> crateKeys = new HashMap<>();
-
-    /** Total number of crates this player has opened */
     @Setter @Getter
     private int totalCratesOpened = 0;
     
