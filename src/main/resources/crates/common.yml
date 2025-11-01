@@ -4,6 +4,9 @@
 
 # Display settings
 display-name: "&7Common Crate"
+crate:
+  material: "CHEST"
+  custom-model-data: "vulcan:crate_common"
 
 # Hologram settings
 hologram:
@@ -43,6 +46,7 @@ prizes:
       damage: 0
       name: "&2&l$&a&l250,000"
       lore: []
+      url: "http://textures.minecraft.net/texture/35f55536bc7e023ae7069ed7c445b4d59fc8c2c49a7e8eaa59231282e9fbf4d1"
       glowing: true
     announce: false
 

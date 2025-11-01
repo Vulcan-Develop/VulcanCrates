@@ -2,6 +2,7 @@ package net.vulcandev.vulcancrates.command.subcommand;
 
 import net.xantharddev.vulcanlib.libs.Colour;
 import net.xantharddev.vulcanlib.libs.SerializableLocation;
+import net.xantharddev.vulcanlib.libs.SimpleBlock;
 import net.xantharddev.vulcanlib.libs.material.MaterialDb;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -71,7 +72,8 @@ public class PlaceCommand {
         SerializableLocation location = new SerializableLocation(targetBlock.getLocation());
 
         // Place the chest immediately
-        targetBlock.setType(MaterialDb.get(plugin.conf().getString("crate-block.material")));
+        SimpleBlock simpleBlock = SimpleBlock.builder().build();
+        simpleBlock.setBlock(targetBlock.getLocation(), crate.getCustomModelData(), MaterialDb.get(crate.getMaterial()));
 
         // Use the plugin's method to set location (this handles holograms automatically)
         plugin.setCrateLocation(crate.getName(), location);

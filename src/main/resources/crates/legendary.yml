@@ -4,6 +4,9 @@
 
 # Display settings
 display-name: "&6Legendary Crate"
+crate:
+  material: "CHEST"
+  custom-model-data: "vulcan:crate_legendary"
 
 # Hologram settings
 hologram:

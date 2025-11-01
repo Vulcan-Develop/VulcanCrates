@@ -3,6 +3,7 @@ package net.vulcandev.vulcancrates.objects;
 import lombok.Getter;
 import lombok.Setter;
 import net.xantharddev.vulcanlib.libs.SerializableLocation;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,6 +22,8 @@ public class Crate {
     private SerializableLocation location;
     private List<String> hologramLines;
     private double hologramYOffset;
+    private String material;
+    private String customModelData;
 
     public Crate(String name) {
         this.name = name;

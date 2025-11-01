@@ -165,6 +165,7 @@ public class CratePreviewGUI extends GUI<Integer> {
                     .setAmount(prize.getAmount())
                     .setDamage(prize.getData())
                     .setLore(new ArrayList<>(prize.getLore()))
+                    .setUrl(prize.getUrl())
                     .setName(Colour.colour(prize.getName()));
             
             // Add admin test info if user has permission

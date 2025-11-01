@@ -86,6 +86,8 @@ public class CrateManager {
         Crate crate = new Crate(crateName);
 
         crate.setDisplayName(config.getString("display-name", "&f&l" + crateName + " Crate"));
+        crate.setMaterial(config.getString("crate.material", "CHEST"));
+        crate.setCustomModelData(config.getString("crate.custom-model-data", null));
 
         if (config.contains("hologram")) {
             crate.setHologramLines(config.getStringList("hologram.lines"));
@@ -131,7 +133,6 @@ public class CrateManager {
         }
         
         prize.setAnnounce(config.getBoolean(path + ".announce", false));
-        prize.setUrl(config.getString(path + ".url", ""));
 
         if (config.contains(path + ".item")) {
             String materialStr = config.getString(path + ".item.type",
@@ -153,6 +154,7 @@ public class CrateManager {
             boolean glowing = config.getBoolean(path + ".item.glowing",
                              config.getBoolean(path + ".item.glow", false));
             prize.setGlow(glowing);
+            prize.setUrl(config.getString(path + ".item.url", ""));
         }
 
         return prize;

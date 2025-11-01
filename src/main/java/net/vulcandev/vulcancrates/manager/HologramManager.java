@@ -19,12 +19,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HologramManager {
     private final VulcanCrates plugin;
+    private final int displayRange;
+    private final int updateRange;
+    private final int updateInterval;
 
     /** Map of crate names to their hologram objects */
     private final Map<String, Hologram> crateHolograms = new ConcurrentHashMap<>();
 
     public HologramManager(VulcanCrates plugin) {
         this.plugin = plugin;
+        this.displayRange = plugin.getConfig().getInt("holograms.display-range", 16);
+        this.updateRange = plugin.getConfig().getInt("holograms.update-range", 16);
+        this.updateInterval = plugin.getConfig().getInt("holograms.update-interval", 20);
     }
 
     /**
@@ -64,9 +70,9 @@ public class HologramManager {
             Hologram hologram = DHAPI.createHologram(hologramId, hologramLocation, processedLines);
 
             // Configure hologram settings
-            hologram.setDisplayRange(16);
-            hologram.setUpdateRange(16);
-            hologram.setUpdateInterval(20);
+            hologram.setDisplayRange(displayRange);
+            hologram.setUpdateRange(updateRange);
+            hologram.setUpdateInterval(updateInterval);
 
             // Store the hologram reference
             crateHolograms.put(crate.getName(), hologram);

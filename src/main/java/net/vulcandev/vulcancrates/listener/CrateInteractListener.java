@@ -35,14 +35,13 @@ public class CrateInteractListener implements Listener {
         Block block = event.getClickedBlock();
         if (block == null) return;
         
-        if (block.getType() != MaterialDb.get(plugin.conf().getString("crate-block.material"))) return;
-        
         Player player = event.getPlayer();
         SerializableLocation location = new SerializableLocation(block.getLocation());
         
         // Find crate at this location
         Crate crate = findCrateAtLocation(location);
         if (crate == null) return;
+        if(block.getType() != MaterialDb.get(crate.getMaterial())) return;
 
         event.setCancelled(true);
 
