@@ -6,7 +6,7 @@
 
     <groupId>net.vulcandev.vulcancrates</groupId>
     <artifactId>VulcanCrates</artifactId>
-    <version>1.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>VulcanCrates</name>
@@ -50,26 +50,25 @@
     </repositories>
 
     <dependencies>
-          <dependency>
-              <groupId>com.golfing8.winespigot</groupId>
-              <artifactId>WineSpigot</artifactId>
-              <version>1.0</version>
-              <scope>system</scope>
-              <systemPath>${project.basedir}/libs/WineSpigot.jar</systemPath>
-          </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
           <dependency>
               <groupId>net.xantharddev.vulcanlib</groupId>
               <artifactId>VulcanLib</artifactId>
               <version>2.2</version>
               <scope>system</scope>
-              <systemPath>${project.basedir}/libs/VulcanLib.jar</systemPath>
+            <systemPath>C:/Development/libs/VulcanLib.jar</systemPath>
           </dependency>
         <dependency>
             <groupId>be.maximvdw</groupId>
             <artifactId>MVdWPlaceholderAPI</artifactId>
             <version>1.0.2-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/MVdWPlaceholderAP-3.1.1.jar</systemPath>
+            <systemPath>C:/Development/libs/MVdWPlaceholderAP-3.1.1.jar</systemPath>
         </dependency>
         <dependency>
           <groupId>com.github.decentsoftware-eu</groupId>
@@ -89,14 +88,14 @@
             <artifactId>PlaceholderAPI</artifactId>
             <version>2.10.6</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/PlaceholderAPI-2.10.6.jar</systemPath>
+            <systemPath>C:/Development/libs/PlaceholderAPI-2.10.9.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.comphenix</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>LATEST</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/ProtocolLib.jar</systemPath>
+            <systemPath>C:/Development/libs/ProtocolLib.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

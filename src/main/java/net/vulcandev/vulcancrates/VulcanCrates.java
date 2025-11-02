@@ -5,14 +5,12 @@ import lombok.Getter;
 import me.plugin.libs.YamlDocument;
 import net.xantharddev.vulcanlib.ConfigFile;
 import net.xantharddev.vulcanlib.Logger;
-import net.xantharddev.vulcanlib.command.CommandManager;
-import net.xantharddev.vulcanlib.command.FeatureCommand;
 import net.xantharddev.vulcanlib.libs.DataUtils;
 import net.xantharddev.vulcanlib.libs.SerializableLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-import net.vulcandev.vulcancrates.command.CrateCommand;
+import net.vulcandev.vulcancrates.command.CrateCommands;
 import net.vulcandev.vulcancrates.listener.CrateInteractListener;
 import net.vulcandev.vulcancrates.manager.CrateManager;
 import net.vulcandev.vulcancrates.manager.HologramManager;
@@ -22,9 +20,7 @@ import net.vulcandev.vulcancrates.placeholders.CratePlaceholders;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -34,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class VulcanCrates extends JavaPlugin {
 
     private static VulcanCrates instance;
-    private final List<FeatureCommand> featureCommands = new ArrayList<>();
 
     private YamlDocument config;
     private YamlDocument guiConfig;
@@ -76,8 +71,7 @@ public final class VulcanCrates extends JavaPlugin {
     }
 
     private void registerCommands() {
-        featureCommands.add(new CrateCommand(this));
-        CommandManager.getInstance().registerCommands("Crates", featureCommands);
+        CrateCommands.registerAll(this);
     }
 
     private void registerListeners() {
@@ -94,15 +88,10 @@ public final class VulcanCrates extends JavaPlugin {
     public void onReload() {
         hologramManager.removeAllHolograms();
 
-        CommandManager.getInstance().unregisterAllCommands(featureCommands);
-        featureCommands.clear();
-
         ConfigFile.reloadConfig(config);
         ConfigFile.reloadConfig(guiConfig);
         crateManager.loadAllCrates();
         loadCrateLocations();
-
-        registerCommands();
 
         Bukkit.getScheduler().runTaskLater(this, () -> hologramManager.loadAllHolograms(), 10L);
 
@@ -115,8 +104,6 @@ public final class VulcanCrates extends JavaPlugin {
         if (playerDataManager != null) playerDataManager.shutdown();
 
         saveCrateLocations();
-
-        CommandManager.getInstance().unregisterAllCommands(featureCommands);
 
         Bukkit.getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
