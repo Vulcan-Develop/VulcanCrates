@@ -13,7 +13,7 @@ hologram:
   lines:
     - "&f>&7>&f> &7&lCommon Crate &f<&7<&f<"
     - "&7Obtain these from /vote"
-    - "&7You have &f%crates_keys_common% &7keys"
+    - "&7You have &f%vulcancrates_keys_common% &7keys"
   y-offset: 2.0
 
 # Prizes configuration

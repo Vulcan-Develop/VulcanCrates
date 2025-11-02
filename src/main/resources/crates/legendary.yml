@@ -13,7 +13,7 @@ hologram:
   lines:
     - "&e>&6>&e> &6&lLEGENDARY CRATE &e<&6<&e<"
     - "&7Obtain these from our /store"
-    - "&7You have &f%crates_keys_legendary% &7keys"
+    - "&7You have &f%vulcancrates_keys_legendary% &7keys"
   y-offset: 2.0
 
 # Prizes configuration
