@@ -29,6 +29,12 @@ public class PlayerDataManager {
 
     public void initialize() {
         this.dataFile = new File(plugin.getDataFolder(), "data/players.json");
+
+        File dataFolder = dataFile.getParentFile();
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+
         loadPlayerData();
     }
 
@@ -41,7 +47,7 @@ public class PlayerDataManager {
     }
 
     public void saveAllData() {
-        DataUtils.saveToJson(dataFile, playerData, true);
+        DataUtils.saveToJson(dataFile, playerData, false);
     }
 
     private void loadPlayerData() {

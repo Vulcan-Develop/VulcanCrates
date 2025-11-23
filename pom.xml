@@ -6,7 +6,7 @@
 
     <groupId>net.vulcandev.vulcancrates</groupId>
     <artifactId>VulcanCrates</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
 
     <name>VulcanCrates</name>
@@ -63,13 +63,6 @@
               <scope>system</scope>
             <systemPath>C:/Development/libs/VulcanLib.jar</systemPath>
           </dependency>
-        <dependency>
-            <groupId>be.maximvdw</groupId>
-            <artifactId>MVdWPlaceholderAPI</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>C:/Development/libs/MVdWPlaceholderAP-3.1.1.jar</systemPath>
-        </dependency>
         <dependency>
           <groupId>com.github.decentsoftware-eu</groupId>
           <artifactId>decentholograms</artifactId>
