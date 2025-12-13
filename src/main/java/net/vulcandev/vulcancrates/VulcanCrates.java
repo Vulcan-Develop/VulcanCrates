@@ -3,6 +3,7 @@ package net.vulcandev.vulcancrates;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import me.plugin.libs.YamlDocument;
+import net.vulcandev.vulcanloader.loader.VulcanPlugin;
 import net.xantharddev.vulcanlib.ConfigFile;
 import net.xantharddev.vulcanlib.Logger;
 import net.xantharddev.vulcanlib.libs.DataUtils;
@@ -27,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Main plugin class for VulcanCrates.
  * Manages crate functionality including configuration, managers, commands, and persistence.
  */
-public final class VulcanCrates extends JavaPlugin {
+public final class VulcanCrates extends VulcanPlugin {
 
     private static VulcanCrates instance;
 
@@ -45,7 +46,7 @@ public final class VulcanCrates extends JavaPlugin {
     public YamlDocument guiConf() {return guiConfig;}
 
     @Override
-    public void onEnable() {
+    public void onSecureEnable() {
         instance = this;
 
         this.config = ConfigFile.createConfig(this, "config.yml");
@@ -99,7 +100,7 @@ public final class VulcanCrates extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {
+    public void onSecureDisable() {
         if (hologramManager != null) hologramManager.removeAllHolograms();
         if (playerDataManager != null) playerDataManager.shutdown();
 
