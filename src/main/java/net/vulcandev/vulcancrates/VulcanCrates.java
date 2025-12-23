@@ -104,7 +104,7 @@ public final class VulcanCrates extends VulcanPlugin {
         if (hologramManager != null) hologramManager.removeAllHolograms();
         if (playerDataManager != null) playerDataManager.shutdown();
 
-        saveCrateLocations();
+        saveCrateLocations(false);
 
         Bukkit.getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
@@ -127,7 +127,7 @@ public final class VulcanCrates extends VulcanPlugin {
         }
     }
 
-    public void saveCrateLocations() {
+    public void saveCrateLocations(boolean async) {
         Map<String, SerializableLocation> locations = new ConcurrentHashMap<>();
 
         if (crateManager != null) {
@@ -138,7 +138,7 @@ public final class VulcanCrates extends VulcanPlugin {
             }
         }
 
-        DataUtils.saveToJson(locationFile, locations, true);
+        DataUtils.saveToJson(locationFile, locations, async);
     }
 
     public void setCrateLocation(String crateName, SerializableLocation location) {
@@ -148,7 +148,7 @@ public final class VulcanCrates extends VulcanPlugin {
             crate.setLocation(location);
             hologramManager.createHologram(crate);
         }
-        saveCrateLocations();
+        saveCrateLocations(true);
     }
 
     public void removeCrateLocation(String crateName) {
@@ -157,6 +157,6 @@ public final class VulcanCrates extends VulcanPlugin {
             hologramManager.removeHologram(crateName);
             crate.setLocation(null);
         }
-        saveCrateLocations();
+        saveCrateLocations(true);
     }
 }
