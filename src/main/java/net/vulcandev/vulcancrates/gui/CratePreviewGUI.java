@@ -165,6 +165,7 @@ public class CratePreviewGUI extends GUI<Integer> {
                     .setAmount(prize.getAmount())
                     .setDamage(prize.getData())
                     .setLore(new ArrayList<>(prize.getLore()))
+                    .setGlowing(prize.isGlow())
                     .setUrl(prize.getUrl())
                     .setName(Colour.colour(prize.getName()));
             
