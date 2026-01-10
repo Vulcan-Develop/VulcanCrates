@@ -31,6 +31,7 @@ import java.util.*;
  *   /crate preview <crate>                 - Preview crate contents in a GUI
  *   /crate reload                          - Reload plugin configuration
  *   /crate remove <crate>                  - Remove a placed crate
+ *   /crate check <player> <crate>          - Check how many keys a player has for a specific crate
  */
 public class CrateCommands {
 
@@ -315,6 +316,37 @@ public class CrateCommands {
                                     .replace("%prefix%", prefix)
                                     .replace("%crateType%", crate.getName());
                             sender.sendMessage(Colour.colour(message));
+                        })
+                        .build())
+
+                .subCommand(SubCommand.create("check")
+                        .description("Check how many keys a player has for a specific crate")
+                        .permission("crates.check")
+                        .argument(CommandArgument.of("player", ArgumentType.PLAYER)
+                                .description("The player to check")
+                                .required()
+                                .build())
+                        .argument(CommandArgument.of("crate", ArgumentType.STRING)
+                                .description("The type of crate")
+                                .required()
+                                .completer((sender, partial) -> new ArrayList<>(plugin.getCrateManager().getCrateNames()))
+                                .build())
+                        .execute((sender, ctx) -> {
+                            Player target = ctx.getPlayer("player");
+                            String crateName = ctx.getString("crate");
+
+                            Crate crate = plugin.getCrateManager().getCrateIgnoreCase(crateName);
+                            if (crate == null) {
+                                sender.sendMessage(Colour.colour("&cCrate '" + crateName + "' not found."));
+                                return;
+                            }
+
+                            PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(target);
+                            int keyCount = playerData.getKeys(crate.getName());
+
+                            String prefix = plugin.conf().getString("messages.prefix", "&6[Crates]");
+                            sender.sendMessage(Colour.colour(prefix + " &e" + target.getName() + " &7has &6" +
+                                    keyCount + " &7" + crate.getName() + " key(s)."));
                         })
                         .build())
 
