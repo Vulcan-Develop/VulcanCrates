@@ -24,6 +24,21 @@ hologram:
     - "&7You have &f%vulcancrates_keys_legendary% &7keys"
   y-offset: 2.0
 
+# Effects played when the crate is opened
+# Sound names: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+# Particle names: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Particle.html
+effects:
+  open:
+    sound: "UI_TOAST_CHALLENGE_COMPLETE"
+    sound-volume: 1.0
+    sound-pitch: 1.0
+    particle: "TOTEM"
+    particle-count: 50
+    particle-speed: 0.3
+    particle-offset-x: 0.5
+    particle-offset-y: 0.5
+    particle-offset-z: 0.5
+
 # Prizes configuration
 prizes:
   # ================================

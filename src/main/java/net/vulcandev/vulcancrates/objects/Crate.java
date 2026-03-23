@@ -33,6 +33,17 @@ public class Crate {
     private short keyDamage;
     private boolean keyUnbreakable;
 
+    // Effects
+    private String openSound;
+    private float openSoundVolume;
+    private float openSoundPitch;
+    private String openParticle;
+    private int openParticleCount;
+    private double openParticleSpeed;
+    private double openParticleOffsetX;
+    private double openParticleOffsetY;
+    private double openParticleOffsetZ;
+
     public Crate(String name) {
         this.name = name;
         this.prizes = new LinkedHashMap<>();

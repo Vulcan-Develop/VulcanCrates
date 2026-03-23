@@ -24,6 +24,21 @@ hologram:
     - "&7You have &f%vulcancrates_keys_common% &7keys"
   y-offset: 2.0
 
+# Effects played when the crate is opened
+# Sound names: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+# Particle names: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Particle.html
+effects:
+  open:
+    sound: "ENTITY_PLAYER_LEVELUP"
+    sound-volume: 1.0
+    sound-pitch: 1.0
+    particle: "FIREWORKS_SPARK"
+    particle-count: 30
+    particle-speed: 0.2
+    particle-offset-x: 0.5
+    particle-offset-y: 0.5
+    particle-offset-z: 0.5
+
 # Prizes configuration
 prizes:
   # ================================

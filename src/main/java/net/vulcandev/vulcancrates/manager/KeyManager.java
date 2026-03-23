@@ -1,5 +1,10 @@
 package net.vulcandev.vulcancrates.manager;
 
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadableItemNBT;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import lombok.Getter;
 import net.vulcandev.vulcancrates.VulcanCrates;
 import net.vulcandev.vulcancrates.objects.Crate;
@@ -25,6 +30,7 @@ import java.util.Map;
  */
 public class KeyManager {
     private static final String LEGACY_KEY_MARKER_PREFIX = "§0VC_KEY:";
+    private static final String NBT_CRATE_KEY = "vc_crate_key";
     private final VulcanCrates plugin;
 
     public KeyManager(VulcanCrates plugin) {
@@ -175,7 +181,6 @@ public class KeyManager {
     public ItemStack createPhysicalKey(Crate crate, int amount) {
         Material material = MaterialDb.get(crate.getKeyMaterial(), Material.TRIPWIRE_HOOK);
         List<String> lore = new ArrayList<>(colourize(parseTemplates(getKeyLore(crate), crate)));
-        lore.add(buildLegacyKeyMarker(crate));
 
         SimpleItem.Builder builder = SimpleItem.builder()
                 .setMaterial(material)
@@ -196,7 +201,10 @@ public class KeyManager {
             builder.setUrl(crate.getKeyUrl());
         }
 
-        return builder.build().get();
+        ItemStack item = builder.build().get();
+
+        NBT.modify(item, (Consumer<ReadWriteItemNBT>) nbt -> nbt.setString(NBT_CRATE_KEY, crate.getName().toLowerCase(Locale.ROOT)));
+        return item;
     }
 
     public boolean isPhysicalKey(ItemStack item, Crate crate) {
@@ -292,6 +300,13 @@ public class KeyManager {
             return null;
         }
 
+        // Check NBT tag first (new keys)
+        String nbtValue = NBT.get(item, (Function<ReadableItemNBT, String>) nbt -> nbt.getString(NBT_CRATE_KEY));
+        if (nbtValue != null && !nbtValue.isEmpty()) {
+            return nbtValue;
+        }
+
+        // Fall back to legacy lore tag for keys given before this update
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta == null || !itemMeta.hasLore()) {
             return null;
@@ -365,10 +380,6 @@ public class KeyManager {
             return configuredMode;
         }
         return fallback;
-    }
-
-    private String buildLegacyKeyMarker(Crate crate) {
-        return LEGACY_KEY_MARKER_PREFIX + crate.getName().toLowerCase(Locale.ROOT);
     }
 
     @Getter

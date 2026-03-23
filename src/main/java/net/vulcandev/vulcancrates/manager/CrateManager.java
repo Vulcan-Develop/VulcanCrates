@@ -110,6 +110,19 @@ public class CrateManager {
             crate.setHologramYOffset(1.0);
         }
 
+        if (config.contains("effects.open")) {
+            String path = "effects.open";
+            crate.setOpenSound(config.getString(path + ".sound", null));
+            crate.setOpenSoundVolume((float) config.getDouble(path + ".sound-volume", 1.0));
+            crate.setOpenSoundPitch((float) config.getDouble(path + ".sound-pitch", 1.0));
+            crate.setOpenParticle(config.getString(path + ".particle", null));
+            crate.setOpenParticleCount(config.getInt(path + ".particle-count", 30));
+            crate.setOpenParticleSpeed(config.getDouble(path + ".particle-speed", 0.2));
+            crate.setOpenParticleOffsetX(config.getDouble(path + ".particle-offset-x", 0.5));
+            crate.setOpenParticleOffsetY(config.getDouble(path + ".particle-offset-y", 0.5));
+            crate.setOpenParticleOffsetZ(config.getDouble(path + ".particle-offset-z", 0.5));
+        }
+
         if (config.contains("prizes")) {
             Map<String, Prize> prizes = new LinkedHashMap<>();
             try {

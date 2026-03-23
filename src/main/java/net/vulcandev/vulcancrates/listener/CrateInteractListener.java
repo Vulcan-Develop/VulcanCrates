@@ -3,6 +3,9 @@ package net.vulcandev.vulcancrates.listener;
 import net.xantharddev.vulcanlib.libs.Colour;
 import net.xantharddev.vulcanlib.libs.SerializableLocation;
 import net.xantharddev.vulcanlib.libs.material.MaterialDb;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -116,6 +119,43 @@ public class CrateInteractListener implements Listener {
                     .replace("%prizeName%", prize.getName())
                     .replace("%crateType%", crate.getDisplayName());
             plugin.getServer().broadcastMessage(Colour.colour(announceMessage));
+        }
+
+        playEffects(player, crate);
+    }
+
+    private void playEffects(Player player, Crate crate) {
+        if (crate.getLocation() == null) return;
+        Location loc = crate.getLocation().getLocation();
+        if (loc == null || loc.getWorld() == null) return;
+
+        // Center the location on the block
+        Location center = loc.clone().add(0.5, 0.5, 0.5);
+
+        if (crate.getOpenSound() != null && !crate.getOpenSound().isEmpty()) {
+            try {
+                Sound sound = Sound.valueOf(crate.getOpenSound().toUpperCase());
+                loc.getWorld().playSound(center, sound, crate.getOpenSoundVolume(), crate.getOpenSoundPitch());
+            } catch (IllegalArgumentException e) {
+                plugin.getLogger().warning("Invalid sound '" + crate.getOpenSound() + "' in crate '" + crate.getName() + "'");
+            }
+        }
+
+        if (crate.getOpenParticle() != null && !crate.getOpenParticle().isEmpty()) {
+            try {
+                Particle particle = Particle.valueOf(crate.getOpenParticle().toUpperCase());
+                loc.getWorld().spawnParticle(
+                        particle,
+                        center,
+                        crate.getOpenParticleCount(),
+                        crate.getOpenParticleOffsetX(),
+                        crate.getOpenParticleOffsetY(),
+                        crate.getOpenParticleOffsetZ(),
+                        crate.getOpenParticleSpeed()
+                );
+            } catch (IllegalArgumentException e) {
+                plugin.getLogger().warning("Invalid particle '" + crate.getOpenParticle() + "' in crate '" + crate.getName() + "'");
+            }
         }
     }
 }
