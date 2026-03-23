@@ -9,13 +9,10 @@ import net.xantharddev.vulcanlib.libs.Colour;
 import net.xantharddev.vulcanlib.libs.SimpleItem;
 import net.xantharddev.vulcanlib.libs.material.MaterialDb;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,12 +24,11 @@ import java.util.Map;
  * Handles crate key behavior across virtual balances and physical key items.
  */
 public class KeyManager {
+    private static final String LEGACY_KEY_MARKER_PREFIX = "§0VC_KEY:";
     private final VulcanCrates plugin;
-    private final NamespacedKey crateKeyNameKey;
 
     public KeyManager(VulcanCrates plugin) {
         this.plugin = plugin;
-        this.crateKeyNameKey = new NamespacedKey(plugin, "physical_crate_key");
     }
 
     public KeyMode getConfiguredKeyMode() {
@@ -178,12 +174,15 @@ public class KeyManager {
 
     public ItemStack createPhysicalKey(Crate crate, int amount) {
         Material material = MaterialDb.get(crate.getKeyMaterial(), Material.TRIPWIRE_HOOK);
+        List<String> lore = new ArrayList<>(colourize(parseTemplates(getKeyLore(crate), crate)));
+        lore.add(buildLegacyKeyMarker(crate));
+
         SimpleItem.Builder builder = SimpleItem.builder()
                 .setMaterial(material)
                 .setAmount(Math.max(1, amount))
                 .setDamage(crate.getKeyDamage())
                 .setName(Colour.colour(parseTemplate(getKeyDisplayName(crate), crate)))
-                .setLore(colourize(parseTemplates(getKeyLore(crate), crate)))
+                .setLore(lore)
                 .setGlowing(crate.isKeyGlowing())
                 .setUnbreakable(crate.isKeyUnbreakable());
 
@@ -197,16 +196,7 @@ public class KeyManager {
             builder.setUrl(crate.getKeyUrl());
         }
 
-        ItemStack item = builder.build().get();
-        ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) {
-            return item;
-        }
-
-        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        dataContainer.set(crateKeyNameKey, PersistentDataType.STRING, crate.getName().toLowerCase(Locale.ROOT));
-        item.setItemMeta(itemMeta);
-        return item;
+        return builder.build().get();
     }
 
     public boolean isPhysicalKey(ItemStack item, Crate crate) {
@@ -260,23 +250,21 @@ public class KeyManager {
 
     private boolean consumePhysicalKey(Player player, Crate crate) {
         PlayerInventory inventory = player.getInventory();
-
-        ItemStack mainHand = inventory.getItemInMainHand();
+        int heldSlot = inventory.getHeldItemSlot();
+        ItemStack mainHand = inventory.getItem(heldSlot);
         if (isPhysicalKey(mainHand, crate)) {
-            decreaseStack(inventory, inventory.getHeldItemSlot(), mainHand);
+            assert mainHand != null;
+            decreaseStack(inventory, heldSlot, mainHand);
             return true;
         }
 
-        ItemStack offHand = inventory.getItemInOffHand();
-        if (isPhysicalKey(offHand, crate)) {
-            int updatedAmount = offHand.getAmount() - 1;
-            inventory.setItemInOffHand(updatedAmount <= 0 ? null : withAmount(offHand, updatedAmount));
-            return true;
-        }
+        ItemStack[] contents = inventory.getContents();
+        for (int i = 0; i < contents.length; i++) {
+            if (i == heldSlot) {
+                continue;
+            }
 
-        ItemStack[] storageContents = inventory.getStorageContents();
-        for (int i = 0; i < storageContents.length; i++) {
-            ItemStack item = storageContents[i];
+            ItemStack item = contents[i];
             if (!isPhysicalKey(item, crate)) {
                 continue;
             }
@@ -305,12 +293,23 @@ public class KeyManager {
         }
 
         ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null) {
+        if (itemMeta == null || !itemMeta.hasLore()) {
             return null;
         }
 
-        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        return dataContainer.get(crateKeyNameKey, PersistentDataType.STRING);
+        List<String> lore = itemMeta.getLore();
+        if (lore == null || lore.isEmpty()) {
+            return null;
+        }
+
+        for (String line : lore) {
+            if (line == null || !line.startsWith(LEGACY_KEY_MARKER_PREFIX)) {
+                continue;
+            }
+            return line.substring(LEGACY_KEY_MARKER_PREFIX.length()).toLowerCase(Locale.ROOT);
+        }
+
+        return null;
     }
 
     private String getKeyDisplayName(Crate crate) {
@@ -366,6 +365,10 @@ public class KeyManager {
             return configuredMode;
         }
         return fallback;
+    }
+
+    private String buildLegacyKeyMarker(Crate crate) {
+        return LEGACY_KEY_MARKER_PREFIX + crate.getName().toLowerCase(Locale.ROOT);
     }
 
     @Getter
