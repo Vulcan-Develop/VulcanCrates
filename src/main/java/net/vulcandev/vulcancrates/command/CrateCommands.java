@@ -4,6 +4,7 @@ import net.vulcandev.vulcancrates.VulcanCrates;
 import net.vulcandev.vulcancrates.gui.CratePreviewGUI;
 import net.vulcandev.vulcancrates.manager.KeyManager;
 import net.vulcandev.vulcancrates.objects.Crate;
+import net.vulcandev.vulcancrates.objects.KeyMode;
 import net.xantharddev.vulcanlib.command.SubCommand;
 import net.xantharddev.vulcanlib.command.VulcanCommand;
 import net.xantharddev.vulcanlib.command.args.ArgumentType;
@@ -25,8 +26,12 @@ import java.util.*;
  * Consolidated crate command handler using VulcanLib's VulcanCommand system.
  * <p>
  * Commands:
- *   /crate give <player> <crate> [amount]  - Give crate keys to a specific player
- *   /crate giveall <crate> <amount>        - Give crate keys to all online players
+ *   /crate give <player> <crate> [amount]           - Give keys using the configured default give mode
+ *   /crate givevirtual <player> <crate> [amount]    - Give virtual crate keys to a specific player
+ *   /crate givephysical <player> <crate> [amount]   - Give physical crate keys to a specific player
+ *   /crate giveall <crate> <amount>                 - Give keys to all online players using the configured default give mode
+ *   /crate giveallvirtual <crate> <amount>          - Give virtual crate keys to all online players
+ *   /crate giveallphysical <crate> <amount>         - Give physical crate keys to all online players
  *   /crate list                            - List all available crates
  *   /crate place <crate>                   - Place a crate at your location
  *   /crate preview <crate>                 - Preview crate contents in a GUI
@@ -47,106 +52,25 @@ public class CrateCommands {
                 .description("Manage crates and keys")
                 .permission("crates.use")
 
-                .subCommand(SubCommand.create("give")
-                        .description("Give crate keys to a player")
-                        .permission("crates.give")
-                        .argument(CommandArgument.of("player", ArgumentType.PLAYER)
-                                .description("The player to give keys to")
-                                .required()
-                                .build())
-                        .argument(CommandArgument.of("crate", ArgumentType.STRING)
-                                .description("The type of crate")
-                                .required()
-                                .completer((sender, partial) -> new ArrayList<>(plugin.getCrateManager().getCrateNames()))
-                                .build())
-                        .argument(CommandArgument.of("amount", ArgumentType.INT)
-                                .description("Number of keys to give (default: 1)")
-                                .build())
-                        .execute((sender, ctx) -> {
-                            Player target = ctx.getPlayer("player");
-                            String crateName = ctx.getString("crate");
-                            int amount = ctx.getInt("amount", 1);
+                .subCommand(createGiveSubCommand(plugin, "give",
+                        "Give crate keys to a player using the configured default give mode",
+                        "crates.give", null))
+                .subCommand(createGiveSubCommand(plugin, "givevirtual",
+                        "Give virtual crate keys to a player",
+                        "crates.give", KeyMode.VIRTUAL))
+                .subCommand(createGiveSubCommand(plugin, "givephysical",
+                        "Give physical crate keys to a player",
+                        "crates.give", KeyMode.PHYSICAL))
 
-                            Crate crate = plugin.getCrateManager().getCrateIgnoreCase(crateName);
-                            if (crate == null) {
-                                sender.sendMessage(Colour.colour("&cCrate '" + crateName + "' not found."));
-                                return;
-                            }
-
-                            if (amount <= 0) {
-                                sender.sendMessage(Colour.colour("&cAmount must be positive."));
-                                return;
-                            }
-
-                            KeyManager.KeyGrantResult result = plugin.getKeyManager().giveConfiguredKeys(target, crate, amount);
-                            sendGrantMessages(plugin, sender, target, crate, result);
-                        })
-                        .build())
-
-                .subCommand(SubCommand.create("giveall")
-                        .description("Give crate keys to all online players")
-                        .permission("crates.giveall")
-                        .argument(CommandArgument.of("crate", ArgumentType.STRING)
-                                .description("The type of crate")
-                                .required()
-                                .completer((sender, partial) -> new ArrayList<>(plugin.getCrateManager().getCrateNames()))
-                                .build())
-                        .argument(CommandArgument.of("amount", ArgumentType.INT)
-                                .description("Number of keys to give")
-                                .required()
-                                .build())
-                        .execute((sender, ctx) -> {
-                            String crateName = ctx.getString("crate");
-                            int amount = ctx.getInt("amount");
-
-                            Crate crate = plugin.getCrateManager().getCrateIgnoreCase(crateName);
-                            if (crate == null) {
-                                sender.sendMessage(Colour.colour("&cCrate '" + crateName + "' not found."));
-                                return;
-                            }
-
-                            if (amount <= 0) {
-                                sender.sendMessage(Colour.colour("&cAmount must be positive."));
-                                return;
-                            }
-
-                            Set<String> ipSet = new HashSet<>();
-                            int playersGiven = 0;
-
-                            for (Player player : Bukkit.getOnlinePlayers()) {
-                                if (plugin.conf().getBoolean("broadcast.one-per-ip", true)) {
-                                    String ip = Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress();
-                                    if (ipSet.contains(ip)) {
-                                        continue;
-                                    }
-                                    ipSet.add(ip);
-                                }
-
-                                KeyManager.KeyGrantResult result = plugin.getKeyManager().giveConfiguredKeys(player, crate, amount);
-                                sendDroppedPhysicalKeysMessage(plugin, player, crate, result);
-                                playersGiven++;
-                            }
-
-                            String prefix = plugin.conf().getString("messages.prefix", "&6[Crates]");
-                            String keyType = plugin.getKeyManager().getKeyTypeLabel(plugin.getKeyManager().getConfiguredKeyMode());
-
-                            if (plugin.conf().getBoolean("broadcast.giveall-enabled", true)) {
-                                for (String message : plugin.conf().getStringList("broadcast.giveall-message")) {
-                                    String formattedMessage = message
-                                            .replace("{amount}", String.valueOf(amount))
-                                            .replace("{crateName}", crate.getName())
-                                            .replace("{crateDisplayName}", crate.getDisplayName())
-                                            .replace("{keyMode}", plugin.getKeyManager().getConfiguredKeyMode().getDisplayName())
-                                            .replace("{keyType}", keyType);
-                                    Bukkit.broadcastMessage(Colour.colour(formattedMessage));
-                                }
-                            }
-
-                            sender.sendMessage(Colour.colour(prefix + " &7Gave &6" + amount + " &7" +
-                                    crate.getDisplayName() + " &f" + keyType + " &7key(s) to &6" +
-                                    playersGiven + " &7players!"));
-                        })
-                        .build())
+                .subCommand(createGiveAllSubCommand(plugin, "giveall",
+                        "Give crate keys to all online players using the configured default give mode",
+                        "crates.giveall", null))
+                .subCommand(createGiveAllSubCommand(plugin, "giveallvirtual",
+                        "Give virtual crate keys to all online players",
+                        "crates.giveall", KeyMode.VIRTUAL))
+                .subCommand(createGiveAllSubCommand(plugin, "giveallphysical",
+                        "Give physical crate keys to all online players",
+                        "crates.giveall", KeyMode.PHYSICAL))
 
                 .subCommand(SubCommand.create("list")
                         .description("List all available crates")
@@ -163,6 +87,12 @@ public class CrateCommands {
                             sender.sendMessage(Colour.colour(prefix + " &7Available crates:"));
                             sender.sendMessage(Colour.colour("&7Current key mode: &f" +
                                     plugin.getKeyManager().getConfiguredKeyMode().getDisplayName()));
+                            sender.sendMessage(Colour.colour("&7Default give mode: &f" +
+                                    plugin.getKeyManager().getConfiguredGiveMode().getDisplayName()));
+                            if (plugin.getKeyManager().getConfiguredKeyMode() == KeyMode.BOTH) {
+                                sender.sendMessage(Colour.colour("&7Consume priority: &f" +
+                                        plugin.getKeyManager().getConsumePriorityMode().getDisplayName()));
+                            }
                             sender.sendMessage(Colour.colour("&7&m----------------------------"));
 
                             for (Crate crate : crates) {
@@ -346,6 +276,123 @@ public class CrateCommands {
 
                 .build()
                 .register(plugin);
+    }
+
+    private static SubCommand createGiveSubCommand(VulcanCrates plugin, String name, String description,
+                                                   String permission, KeyMode forcedMode) {
+        return SubCommand.create(name)
+                .description(description)
+                .permission(permission)
+                .argument(CommandArgument.of("player", ArgumentType.PLAYER)
+                        .description("The player to give keys to")
+                        .required()
+                        .build())
+                .argument(CommandArgument.of("crate", ArgumentType.STRING)
+                        .description("The type of crate")
+                        .required()
+                        .completer((sender, partial) -> new ArrayList<>(plugin.getCrateManager().getCrateNames()))
+                        .build())
+                .argument(CommandArgument.of("amount", ArgumentType.INT)
+                        .description("Number of keys to give (default: 1)")
+                        .build())
+                .execute((sender, ctx) -> {
+                    Player target = ctx.getPlayer("player");
+                    String crateName = ctx.getString("crate");
+                    int amount = ctx.getInt("amount", 1);
+
+                    Crate crate = plugin.getCrateManager().getCrateIgnoreCase(crateName);
+                    if (crate == null) {
+                        sender.sendMessage(Colour.colour("&cCrate '" + crateName + "' not found."));
+                        return;
+                    }
+
+                    if (amount <= 0) {
+                        sender.sendMessage(Colour.colour("&cAmount must be positive."));
+                        return;
+                    }
+
+                    KeyManager.KeyGrantResult result = plugin.getKeyManager().giveKeys(
+                            target,
+                            crate,
+                            amount,
+                            resolveGrantMode(plugin, forcedMode)
+                    );
+                    sendGrantMessages(plugin, sender, target, crate, result);
+                })
+                .build();
+    }
+
+    private static SubCommand createGiveAllSubCommand(VulcanCrates plugin, String name, String description,
+                                                      String permission, KeyMode forcedMode) {
+        return SubCommand.create(name)
+                .description(description)
+                .permission(permission)
+                .argument(CommandArgument.of("crate", ArgumentType.STRING)
+                        .description("The type of crate")
+                        .required()
+                        .completer((sender, partial) -> new ArrayList<>(plugin.getCrateManager().getCrateNames()))
+                        .build())
+                .argument(CommandArgument.of("amount", ArgumentType.INT)
+                        .description("Number of keys to give")
+                        .required()
+                        .build())
+                .execute((sender, ctx) -> {
+                    String crateName = ctx.getString("crate");
+                    int amount = ctx.getInt("amount");
+
+                    Crate crate = plugin.getCrateManager().getCrateIgnoreCase(crateName);
+                    if (crate == null) {
+                        sender.sendMessage(Colour.colour("&cCrate '" + crateName + "' not found."));
+                        return;
+                    }
+
+                    if (amount <= 0) {
+                        sender.sendMessage(Colour.colour("&cAmount must be positive."));
+                        return;
+                    }
+
+                    KeyMode grantMode = resolveGrantMode(plugin, forcedMode);
+                    Set<String> ipSet = new HashSet<>();
+                    int playersGiven = 0;
+
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (plugin.conf().getBoolean("broadcast.one-per-ip", true)) {
+                            String ip = Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress();
+                            if (ipSet.contains(ip)) {
+                                continue;
+                            }
+                            ipSet.add(ip);
+                        }
+
+                        KeyManager.KeyGrantResult result = plugin.getKeyManager().giveKeys(player, crate, amount, grantMode);
+                        sendDroppedPhysicalKeysMessage(plugin, player, crate, result);
+                        playersGiven++;
+                    }
+
+                    String prefix = plugin.conf().getString("messages.prefix", "&6[Crates]");
+                    String keyType = plugin.getKeyManager().getKeyTypeLabel(grantMode);
+
+                    if (plugin.conf().getBoolean("broadcast.giveall-enabled", true)) {
+                        for (String message : plugin.conf().getStringList("broadcast.giveall-message")) {
+                            String formattedMessage = message
+                                    .replace("{amount}", String.valueOf(amount))
+                                    .replace("{crateName}", crate.getName())
+                                    .replace("{crateDisplayName}", crate.getDisplayName())
+                                    .replace("{keyMode}", grantMode.getDisplayName())
+                                    .replace("{keyType}", keyType);
+                            Bukkit.broadcastMessage(Colour.colour(formattedMessage));
+                        }
+                    }
+
+                    sender.sendMessage(Colour.colour(prefix + " &7Gave &6" + amount + " &7" +
+                            crate.getDisplayName() + " &f" + keyType + " &7key(s) to &6" +
+                            playersGiven + " &7players!"));
+                })
+                .build();
+    }
+
+    private static KeyMode resolveGrantMode(VulcanCrates plugin, KeyMode forcedMode) {
+        return forcedMode != null ? forcedMode : plugin.getKeyManager().getConfiguredGiveMode();
     }
 
     private static void sendGrantMessages(VulcanCrates plugin, CommandSender sender, Player target, Crate crate,

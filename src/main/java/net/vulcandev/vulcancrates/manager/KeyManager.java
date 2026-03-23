@@ -39,23 +39,56 @@ public class KeyManager {
         return KeyMode.fromConfig(plugin.conf().getString("keys.mode", "VIRTUAL"));
     }
 
+    public KeyMode getConfiguredGiveMode() {
+        KeyMode fallbackMode = getConfiguredKeyMode() == KeyMode.PHYSICAL ? KeyMode.PHYSICAL : KeyMode.VIRTUAL;
+        return normalizeBinaryMode(KeyMode.fromConfig(
+                plugin.conf().getString("keys.default-give-mode", fallbackMode.name())),
+                fallbackMode
+        );
+    }
+
+    public KeyMode getConsumePriorityMode() {
+        return normalizeBinaryMode(KeyMode.fromConfig(
+                plugin.conf().getString("keys.consume-priority", "PHYSICAL")),
+                KeyMode.PHYSICAL
+        );
+    }
+
     public String getKeyTypeLabel(KeyMode keyMode) {
-        return keyMode == KeyMode.PHYSICAL ? "physical" : "virtual";
+        switch (keyMode) {
+            case PHYSICAL:
+                return "physical";
+            case BOTH:
+                return "physical or virtual";
+            default:
+                return "virtual";
+        }
     }
 
     public int getUsableKeys(Player player, Crate crate) {
         if (crate == null) {
             return 0;
         }
-        return getConfiguredKeyMode() == KeyMode.PHYSICAL
-                ? getPhysicalKeys(player, crate)
-                : getVirtualKeys(player, crate);
+
+        switch (getConfiguredKeyMode()) {
+            case PHYSICAL:
+                return getPhysicalKeys(player, crate);
+            case BOTH:
+                return getPhysicalKeys(player, crate) + getVirtualKeys(player, crate);
+            default:
+                return getVirtualKeys(player, crate);
+        }
     }
 
     public int getTotalUsableKeys(Player player) {
-        return getConfiguredKeyMode() == KeyMode.PHYSICAL
-                ? getTotalPhysicalKeys(player)
-                : getTotalVirtualKeys(player);
+        switch (getConfiguredKeyMode()) {
+            case PHYSICAL:
+                return getTotalPhysicalKeys(player);
+            case BOTH:
+                return getTotalPhysicalKeys(player) + getTotalVirtualKeys(player);
+            default:
+                return getTotalVirtualKeys(player);
+        }
     }
 
     public int getVirtualKeys(Player player, Crate crate) {
@@ -114,24 +147,29 @@ public class KeyManager {
     }
 
     public boolean useKey(Player player, Crate crate) {
-        if (getConfiguredKeyMode() == KeyMode.PHYSICAL) {
+        KeyMode keyMode = getConfiguredKeyMode();
+        if (keyMode == KeyMode.PHYSICAL) {
             return consumePhysicalKey(player, crate);
         }
 
-        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
-        if (!playerData.canOpenCrate(crate.getName())) {
-            return false;
+        if (keyMode == KeyMode.VIRTUAL) {
+            return consumeVirtualKey(player, crate);
         }
 
-        playerData.useKey(crate.getName());
-        return true;
+        KeyMode consumePriority = getConsumePriorityMode();
+        if (consumePriority == KeyMode.PHYSICAL) {
+            return consumePhysicalKey(player, crate) || consumeVirtualKey(player, crate);
+        }
+
+        return consumeVirtualKey(player, crate) || consumePhysicalKey(player, crate);
     }
 
     public KeyGrantResult giveConfiguredKeys(Player player, Crate crate, int amount) {
-        return giveKeys(player, crate, amount, getConfiguredKeyMode());
+        return giveKeys(player, crate, amount, getConfiguredGiveMode());
     }
 
     public KeyGrantResult giveKeys(Player player, Crate crate, int amount, KeyMode keyMode) {
+        keyMode = normalizeBinaryMode(keyMode, getConfiguredGiveMode());
         if (keyMode == KeyMode.PHYSICAL) {
             return givePhysicalKeys(player, crate, amount);
         }
@@ -180,6 +218,16 @@ public class KeyManager {
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
         playerData.addKeys(crate.getName(), amount);
         return new KeyGrantResult(KeyMode.VIRTUAL, amount, playerData.getKeys(crate.getName()), 0);
+    }
+
+    private boolean consumeVirtualKey(Player player, Crate crate) {
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        if (!playerData.canOpenCrate(crate.getName())) {
+            return false;
+        }
+
+        playerData.useKey(crate.getName());
+        return true;
     }
 
     private KeyGrantResult givePhysicalKeys(Player player, Crate crate, int amount) {
@@ -311,6 +359,13 @@ public class KeyManager {
                 .replace("%crate_name%", crate.getName())
                 .replace("%crate_display%", crate.getDisplayName())
                 .replace("%crate_display_name%", crate.getDisplayName());
+    }
+
+    private KeyMode normalizeBinaryMode(KeyMode configuredMode, KeyMode fallback) {
+        if (configuredMode == KeyMode.PHYSICAL || configuredMode == KeyMode.VIRTUAL) {
+            return configuredMode;
+        }
+        return fallback;
     }
 
     @Getter

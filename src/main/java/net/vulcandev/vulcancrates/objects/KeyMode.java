@@ -7,7 +7,8 @@ import java.util.Locale;
  */
 public enum KeyMode {
     VIRTUAL,
-    PHYSICAL;
+    PHYSICAL,
+    BOTH;
 
     public static KeyMode fromConfig(String rawValue) {
         if (rawValue == null || rawValue.trim().isEmpty()) {

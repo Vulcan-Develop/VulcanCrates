@@ -13,7 +13,7 @@ VulcanCrates lets you set up physical crates in your Minecraft world that player
 - **Preview GUI** - Let players see what's inside a crate before they open it
 - **Weighted Prize System** - Control how rare each prize is with customizable chances
 - **Key Management** - Give keys to individual players or broadcast them to everyone online
-- **Virtual Or Physical Keys** - Swap between stored balances and real tradable key items with `keys.mode`
+- **Virtual And Physical Keys** - Run virtual, physical, or combined key usage with `keys.mode`
 - **Persistent Data** - Player key counts are saved automatically, even through server restarts
 - **PlaceholderAPI Integration** - Use crate data in other plugins
 - **Configurable Everything** - Messages, GUI layouts, hologram text - it's all customizable
@@ -34,8 +34,12 @@ All commands start with `/crate` (or `/crates` if you prefer):
 
 | Command | Description | Permission |
 |---------|-------------|------------|
-| `/crate give <player> <crate> [amount]` | Give keys to a specific player | - |
-| `/crate giveall <crate> [amount]` | Give keys to all online players | - |
+| `/crate give <player> <crate> [amount]` | Give keys using the configured default give mode | - |
+| `/crate givevirtual <player> <crate> [amount]` | Give virtual keys to a specific player | - |
+| `/crate givephysical <player> <crate> [amount]` | Give physical keys to a specific player | - |
+| `/crate giveall <crate> [amount]` | Give keys to all online players using the configured default give mode | - |
+| `/crate giveallvirtual <crate> [amount]` | Give virtual keys to all online players | - |
+| `/crate giveallphysical <crate> [amount]` | Give physical keys to all online players | - |
 | `/crate place <crate>` | Place a crate chest in the world | - |
 | `/crate remove <crate>` | Remove a placed crate | - |
 | `/crate preview <crate>` | Preview the prizes in a crate | - |
@@ -51,7 +55,7 @@ This plugin is free through the Vulcan Loader found in the client panel [Here](h
 
 Here's a quick walkthrough:
 
-1. **Choose your key mode** in `config.yml` with `keys.mode: VIRTUAL` or `keys.mode: PHYSICAL`
+1. **Choose your key mode** in `config.yml` with `keys.mode: VIRTUAL`, `keys.mode: PHYSICAL`, or `keys.mode: BOTH`
 2. **Define your crate** in the config file with its prizes, chances, and optional `key-item` appearance
 3. **Place the crate** using `/crate place <crate-name>`
 4. **Give yourself a key** with `/crate give <your-name> <crate-name>`
@@ -62,7 +66,7 @@ The hologram will appear automatically above the crate, and all locations are sa
 ## How It Works
 
 When you place a crate, it's stored as a physical chest block in the world with a hologram floating above it. The plugin tracks which chest belongs to which crate type. When a player interacts with it, the plugin checks if they have a key for that specific crate. If they do, it selects a random prize based on the weighted chances you configured and gives it to them.
-In `VIRTUAL` mode, key counts are tracked separately and saved to JSON files, so if a player has 5 keys and the server restarts, they'll still have those 5 keys when they come back. In `PHYSICAL` mode, keys are real tagged items that can be traded, stored, and consumed directly from a player's inventory.
+In `VIRTUAL` mode, key counts are tracked separately and saved to JSON files, so if a player has 5 keys and the server restarts, they'll still have those 5 keys when they come back. In `PHYSICAL` mode, keys are real tagged items that can be traded, stored, and consumed directly from a player's inventory. In `BOTH` mode, VulcanCrates accepts either type and consumes whichever type you prioritize in the config.
 
 The compiled JAR will be in the `target` folder. Make sure you have the required libraries in the `libs` folder before building.
 

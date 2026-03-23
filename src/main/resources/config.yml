@@ -1,4 +1,4 @@
-config-version: 1 # Do not touch this
+config-version: 2 # Do not touch this
 
 # ================================
 #        Crates Configuration
@@ -11,7 +11,9 @@ commands:
 
 # Key settings
 keys:
-  mode: "VIRTUAL" # VIRTUAL or PHYSICAL
+  mode: "VIRTUAL" # VIRTUAL, PHYSICAL, or BOTH
+  default-give-mode: "VIRTUAL" # Used by /crate give and /crate giveall
+  consume-priority: "PHYSICAL" # Used when mode is BOTH
 
 # Crate block settings
 crate-block:
