@@ -2,8 +2,8 @@ package net.vulcandev.vulcancrates.command;
 
 import net.vulcandev.vulcancrates.VulcanCrates;
 import net.vulcandev.vulcancrates.gui.CratePreviewGUI;
+import net.vulcandev.vulcancrates.manager.KeyManager;
 import net.vulcandev.vulcancrates.objects.Crate;
-import net.vulcandev.vulcancrates.objects.PlayerData;
 import net.xantharddev.vulcanlib.command.SubCommand;
 import net.xantharddev.vulcanlib.command.VulcanCommand;
 import net.xantharddev.vulcanlib.command.args.ArgumentType;
@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -77,25 +78,8 @@ public class CrateCommands {
                                 return;
                             }
 
-                            PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(target);
-                            playerData.addKeys(crate.getName(), amount);
-
-                            String prefix = plugin.conf().getString("messages.prefix", "&6[Crates]");
-
-                            String gaveMessage = plugin.conf().getString("messages.gave-keys",
-                                    "%prefix% &7You gave %player% &6%amount% &7%crateType% key(s)!")
-                                    .replace("%prefix%", prefix)
-                                    .replace("%player%", target.getName())
-                                    .replace("%amount%", String.valueOf(amount))
-                                    .replace("%crateType%", crate.getName());
-                            sender.sendMessage(Colour.colour(gaveMessage));
-
-                            String receivedMessage = plugin.conf().getString("messages.received-keys",
-                                    "%prefix% &7You now have &6%amount% &7%crateType% key(s)!")
-                                    .replace("%prefix%", prefix)
-                                    .replace("%amount%", String.valueOf(playerData.getKeys(crate.getName())))
-                                    .replace("%crateType%", crate.getName());
-                            target.sendMessage(Colour.colour(receivedMessage));
+                            KeyManager.KeyGrantResult result = plugin.getKeyManager().giveConfiguredKeys(target, crate, amount);
+                            sendGrantMessages(plugin, sender, target, crate, result);
                         })
                         .build())
 
@@ -138,24 +122,29 @@ public class CrateCommands {
                                     ipSet.add(ip);
                                 }
 
-                                PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
-                                playerData.addKeys(crate.getName(), amount);
+                                KeyManager.KeyGrantResult result = plugin.getKeyManager().giveConfiguredKeys(player, crate, amount);
+                                sendDroppedPhysicalKeysMessage(plugin, player, crate, result);
                                 playersGiven++;
                             }
 
                             String prefix = plugin.conf().getString("messages.prefix", "&6[Crates]");
+                            String keyType = plugin.getKeyManager().getKeyTypeLabel(plugin.getKeyManager().getConfiguredKeyMode());
 
                             if (plugin.conf().getBoolean("broadcast.giveall-enabled", true)) {
                                 for (String message : plugin.conf().getStringList("broadcast.giveall-message")) {
                                     String formattedMessage = message
                                             .replace("{amount}", String.valueOf(amount))
-                                            .replace("{crateName}", crate.getName());
+                                            .replace("{crateName}", crate.getName())
+                                            .replace("{crateDisplayName}", crate.getDisplayName())
+                                            .replace("{keyMode}", plugin.getKeyManager().getConfiguredKeyMode().getDisplayName())
+                                            .replace("{keyType}", keyType);
                                     Bukkit.broadcastMessage(Colour.colour(formattedMessage));
                                 }
                             }
 
-                            sender.sendMessage(Colour.colour(prefix + " &7Gave &6" + amount + " &7" + crate.getName() +
-                                    " key(s) to &6" + playersGiven + " &7players!"));
+                            sender.sendMessage(Colour.colour(prefix + " &7Gave &6" + amount + " &7" +
+                                    crate.getDisplayName() + " &f" + keyType + " &7key(s) to &6" +
+                                    playersGiven + " &7players!"));
                         })
                         .build())
 
@@ -172,6 +161,8 @@ public class CrateCommands {
 
                             String prefix = plugin.conf().getString("messages.prefix", "&6[Crates]");
                             sender.sendMessage(Colour.colour(prefix + " &7Available crates:"));
+                            sender.sendMessage(Colour.colour("&7Current key mode: &f" +
+                                    plugin.getKeyManager().getConfiguredKeyMode().getDisplayName()));
                             sender.sendMessage(Colour.colour("&7&m----------------------------"));
 
                             for (Crate crate : crates) {
@@ -341,16 +332,74 @@ public class CrateCommands {
                                 return;
                             }
 
-                            PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(target);
-                            int keyCount = playerData.getKeys(crate.getName());
-
                             String prefix = plugin.conf().getString("messages.prefix", "&6[Crates]");
+                            int activeKeyCount = plugin.getKeyManager().getUsableKeys(target, crate);
+                            int virtualKeyCount = plugin.getKeyManager().getVirtualKeys(target, crate);
+                            int physicalKeyCount = plugin.getKeyManager().getPhysicalKeys(target, crate);
+                            String keyType = plugin.getKeyManager().getKeyTypeLabel(plugin.getKeyManager().getConfiguredKeyMode());
+
                             sender.sendMessage(Colour.colour(prefix + " &e" + target.getName() + " &7has &6" +
-                                    keyCount + " &7" + crate.getName() + " key(s)."));
+                                    activeKeyCount + " &7usable " + crate.getDisplayName() + " &f" + keyType + " &7key(s)."));
+                            sender.sendMessage(Colour.colour("&7Virtual: &6" + virtualKeyCount + " &8| &7Physical: &6" + physicalKeyCount));
                         })
                         .build())
 
                 .build()
                 .register(plugin);
+    }
+
+    private static void sendGrantMessages(VulcanCrates plugin, CommandSender sender, Player target, Crate crate,
+                                          KeyManager.KeyGrantResult result) {
+        String prefix = plugin.conf().getString("messages.prefix", "&6[Crates]");
+        String keyType = result.getKeyTypeLabel();
+        int virtualAmount = plugin.getKeyManager().getVirtualKeys(target, crate);
+        int physicalAmount = plugin.getKeyManager().getPhysicalKeys(target, crate);
+
+        String gaveMessage = plugin.conf().getString("messages.gave-keys",
+                        "%prefix% &7You gave %player% &6%givenAmount% &7%crateType% %keyType% key(s)!")
+                .replace("%prefix%", prefix);
+        sender.sendMessage(Colour.colour(applyKeyMessagePlaceholders(gaveMessage, target, crate, result,
+                virtualAmount, physicalAmount)));
+
+        String receivedMessage = plugin.conf().getString("messages.received-keys",
+                        "%prefix% &7You received &6%givenAmount% &7%crateType% %keyType% key(s)!")
+                .replace("%prefix%", prefix);
+        target.sendMessage(Colour.colour(applyKeyMessagePlaceholders(receivedMessage, target, crate, result,
+                virtualAmount, physicalAmount)));
+
+        sendDroppedPhysicalKeysMessage(plugin, target, crate, result);
+    }
+
+    private static void sendDroppedPhysicalKeysMessage(VulcanCrates plugin, Player target, Crate crate,
+                                                       KeyManager.KeyGrantResult result) {
+        if (result.getDroppedAmount() <= 0) {
+            return;
+        }
+
+        String prefix = plugin.conf().getString("messages.prefix", "&6[Crates]");
+        String message = plugin.conf().getString("messages.physical-keys-dropped",
+                        "%prefix% &7Your inventory was full, so &6%amount% &7%crateType% physical key(s) were dropped at your feet.")
+                .replace("%prefix%", prefix)
+                .replace("%amount%", String.valueOf(result.getDroppedAmount()))
+                .replace("%crateType%", crate.getDisplayName())
+                .replace("%crateName%", crate.getName())
+                .replace("%keyType%", result.getKeyTypeLabel());
+        target.sendMessage(Colour.colour(message));
+    }
+
+    private static String applyKeyMessagePlaceholders(String template, Player target, Crate crate,
+                                                      KeyManager.KeyGrantResult result, int virtualAmount,
+                                                      int physicalAmount) {
+        return template
+                .replace("%player%", target.getName())
+                .replace("%amount%", String.valueOf(result.getRequestedAmount()))
+                .replace("%givenAmount%", String.valueOf(result.getRequestedAmount()))
+                .replace("%currentAmount%", String.valueOf(result.getCurrentAmount()))
+                .replace("%virtualAmount%", String.valueOf(virtualAmount))
+                .replace("%physicalAmount%", String.valueOf(physicalAmount))
+                .replace("%crateType%", crate.getDisplayName())
+                .replace("%crateName%", crate.getName())
+                .replace("%keyMode%", result.getKeyMode().getDisplayName())
+                .replace("%keyType%", result.getKeyTypeLabel());
     }
 }

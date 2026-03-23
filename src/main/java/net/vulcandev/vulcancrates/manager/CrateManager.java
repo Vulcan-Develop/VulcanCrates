@@ -88,6 +88,15 @@ public class CrateManager {
         crate.setDisplayName(config.getString("display-name", "&f&l" + crateName + " Crate"));
         crate.setMaterial(config.getString("crate.material", "CHEST"));
         crate.setCustomModelData(config.getString("crate.custom-model-data", null));
+        crate.setKeyMaterial(config.getString("key-item.material", "TRIPWIRE_HOOK"));
+        crate.setKeyName(config.getString("key-item.name", null));
+        crate.setKeyLore(config.getStringList("key-item.lore"));
+        crate.setKeyGlowing(config.getBoolean("key-item.glowing", true));
+        crate.setKeyCustomModelData(parseOptionalInt(config, "key-item.custom-model-data"));
+        crate.setKeyUrl(config.getString("key-item.url", ""));
+        crate.setKeyOwner(config.getString("key-item.owner", ""));
+        crate.setKeyDamage((short) config.getInt("key-item.damage", config.getInt("key-item.data", 0)));
+        crate.setKeyUnbreakable(config.getBoolean("key-item.unbreakable", false));
 
         if (config.contains("hologram")) {
             crate.setHologramLines(config.getStringList("hologram.lines"));
@@ -118,6 +127,27 @@ public class CrateManager {
         }
 
         return crate;
+    }
+
+    private Integer parseOptionalInt(FileConfiguration config, String path) {
+        if (!config.contains(path)) {
+            return null;
+        }
+
+        Object rawValue = config.get(path);
+        if (rawValue instanceof Number) {
+            return ((Number) rawValue).intValue();
+        }
+
+        if (rawValue instanceof String) {
+            try {
+                return Integer.parseInt(((String) rawValue).trim());
+            } catch (NumberFormatException ignored) {
+                Logger.log(plugin, "Invalid integer value for '" + path + "' in crate config: " + rawValue);
+            }
+        }
+
+        return null;
     }
 
     private Prize loadPrizeFromConfig(FileConfiguration config, String path) {

@@ -8,6 +8,14 @@ crate:
   material: "CHEST"
   custom-model-data: "vulcan:crate_legendary"
 
+key-item:
+  material: "TRIPWIRE_HOOK"
+  name: "&6&lLegendary Key"
+  lore:
+    - "&7Use this key to open"
+    - "%crate_display%&7."
+  glowing: true
+
 # Hologram settings
 hologram:
   lines:

@@ -13,7 +13,6 @@ import net.vulcandev.vulcancrates.VulcanCrates;
 import net.vulcandev.vulcancrates.event.CrateOpenEvent;
 import net.vulcandev.vulcancrates.gui.CratePreviewGUI;
 import net.vulcandev.vulcancrates.objects.Crate;
-import net.vulcandev.vulcancrates.objects.PlayerData;
 import net.vulcandev.vulcancrates.objects.Prize;
 
 /**
@@ -44,22 +43,24 @@ public class CrateInteractListener implements Listener {
         if(block.getType() != MaterialDb.get(crate.getMaterial())) return;
 
         event.setCancelled(true);
-
-
-        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
-
         if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
             new CratePreviewGUI(plugin, player, crate).open();
             return;
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (!playerData.canOpenCrate(crate.getName())) {
-                String message = plugin.conf().getString("messages.no-keys").replace("%prefix%", plugin.conf().getString("messages.prefix"));
+            if (!plugin.getKeyManager().canOpenCrate(player, crate)) {
+                String message = plugin.conf().getString("messages.no-keys",
+                                "%prefix% &7You need a %crateType% %keyType% key to open this crate.")
+                        .replace("%prefix%", plugin.conf().getString("messages.prefix"))
+                        .replace("%crateName%", crate.getName())
+                        .replace("%crateType%", crate.getDisplayName())
+                        .replace("%keyMode%", plugin.getKeyManager().getConfiguredKeyMode().getDisplayName())
+                        .replace("%keyType%", plugin.getKeyManager().getKeyTypeLabel(plugin.getKeyManager().getConfiguredKeyMode()));
                 player.sendMessage(Colour.colour(message));
                 return;
             }
-            openCrate(player, crate, playerData);
+            openCrate(player, crate);
         }
     }
 
@@ -73,12 +74,22 @@ public class CrateInteractListener implements Listener {
         return null;
     }
 
-    private void openCrate(Player player, Crate crate, PlayerData playerData) {
-        playerData.useKey(crate.getName());
-
+    private void openCrate(Player player, Crate crate) {
         Prize prize = crate.getRandomPrize();
         if (prize == null) {
             player.sendMessage(Colour.colour("&cError: No prizes configured for this crate!"));
+            return;
+        }
+
+        if (!plugin.getKeyManager().useKey(player, crate)) {
+            String message = plugin.conf().getString("messages.no-keys",
+                            "%prefix% &7You need a %crateType% %keyType% key to open this crate.")
+                    .replace("%prefix%", plugin.conf().getString("messages.prefix"))
+                    .replace("%crateName%", crate.getName())
+                    .replace("%crateType%", crate.getDisplayName())
+                    .replace("%keyMode%", plugin.getKeyManager().getConfiguredKeyMode().getDisplayName())
+                    .replace("%keyType%", plugin.getKeyManager().getKeyTypeLabel(plugin.getKeyManager().getConfiguredKeyMode()));
+            player.sendMessage(Colour.colour(message));
             return;
         }
 

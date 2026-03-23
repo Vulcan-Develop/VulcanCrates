@@ -9,6 +9,10 @@ commands:
   aliases:
     - "crate"
 
+# Key settings
+keys:
+  mode: "VIRTUAL" # VIRTUAL or PHYSICAL
+
 # Crate block settings
 crate-block:
   auto-restore-on-startup: true
@@ -28,9 +32,12 @@ holograms:
 # Messages
 messages:
   prefix: "&6[Crates]"
+  gave-keys: "%prefix% &7You gave %player% &6%givenAmount% &7%crateType% %keyType% key(s)!"
+  received-keys: "%prefix% &7You received &6%givenAmount% &7%crateType% %keyType% key(s)!"
   crate-rolled-reward-announce: "%prefix% &r%player% &7just rolled a &6%prizeName% &7from a %crateType%&7!"
   crate-rolled-reward: "%prefix% &7You won &6%prizeName%&7!"
   crate-block-placed: "%prefix% &7%crateType% crate successfully placed at your location."
   crate-removed: "%prefix% &7%crateType% crate location removed and chest destroyed."
-  no-keys: "%prefix% &7Purchase crate keys to open this crate!"
+  no-keys: "%prefix% &7You need a %crateType% %keyType% key to open this crate."
+  physical-keys-dropped: "%prefix% &7Your inventory was full, so &6%amount% &7%crateType% physical key(s) were dropped at your feet."
   admin-test-prize: "&a[ADMIN TEST] &7You received the prize: &6%prizeName%"

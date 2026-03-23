@@ -15,6 +15,7 @@ import net.vulcandev.vulcancrates.command.CrateCommands;
 import net.vulcandev.vulcancrates.listener.CrateInteractListener;
 import net.vulcandev.vulcancrates.manager.CrateManager;
 import net.vulcandev.vulcancrates.manager.HologramManager;
+import net.vulcandev.vulcancrates.manager.KeyManager;
 import net.vulcandev.vulcancrates.manager.PlayerDataManager;
 import net.vulcandev.vulcancrates.objects.Crate;
 import net.vulcandev.vulcancrates.placeholders.CratePlaceholders;
@@ -38,6 +39,8 @@ public final class VulcanCrates extends VulcanPlugin {
     private CrateManager crateManager;
     @Getter
     private PlayerDataManager playerDataManager;
+    @Getter
+    private KeyManager keyManager;
     private HologramManager hologramManager;
     private File locationFile;
     private static final Type LOCATIONS_TYPE = new TypeToken<Map<String, SerializableLocation>>(){}.getType();
@@ -55,6 +58,7 @@ public final class VulcanCrates extends VulcanPlugin {
 
         this.crateManager = new CrateManager(this);
         this.playerDataManager = new PlayerDataManager(this, crateManager);
+        this.keyManager = new KeyManager(this);
         this.hologramManager = new HologramManager(this);
 
         crateManager.loadAllCrates();
