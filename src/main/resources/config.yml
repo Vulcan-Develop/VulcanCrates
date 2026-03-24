@@ -11,7 +11,7 @@ commands:
 
 # Key settings
 keys:
-  mode: "VIRTUAL" # VIRTUAL, PHYSICAL, or BOTH
+  mode: "BOTH" # VIRTUAL, PHYSICAL, or BOTH
   default-give-mode: "VIRTUAL" # Used by /crate give and /crate giveall
   consume-priority: "PHYSICAL" # Used when mode is BOTH
 

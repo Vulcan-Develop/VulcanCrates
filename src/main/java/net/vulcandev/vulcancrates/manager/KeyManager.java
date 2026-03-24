@@ -340,7 +340,7 @@ public class KeyManager {
     }
 
     private List<String> getKeyLore(Crate crate) {
-        if (crate.getKeyLore() != null && !crate.getKeyLore().isEmpty()) {
+        if (crate.getKeyLore() != null) {
             return crate.getKeyLore();
         }
 

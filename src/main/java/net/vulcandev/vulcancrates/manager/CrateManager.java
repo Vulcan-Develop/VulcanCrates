@@ -90,7 +90,7 @@ public class CrateManager {
         crate.setCustomModelData(config.getString("crate.custom-model-data", null));
         crate.setKeyMaterial(config.getString("key-item.material", "TRIPWIRE_HOOK"));
         crate.setKeyName(config.getString("key-item.name", null));
-        crate.setKeyLore(config.getStringList("key-item.lore"));
+        crate.setKeyLore(config.contains("key-item.lore") ? config.getStringList("key-item.lore") : null);
         crate.setKeyGlowing(config.getBoolean("key-item.glowing", true));
         crate.setKeyCustomModelData(parseOptionalInt(config, "key-item.custom-model-data"));
         crate.setKeyUrl(config.getString("key-item.url", ""));
