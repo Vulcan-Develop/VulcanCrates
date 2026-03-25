@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import net.vulcandev.vulcancrates.VulcanCrates;
-import net.vulcandev.vulcancrates.event.CrateOpenEvent;
+import net.vulcandev.vulcancrates.api.VulcanAPIWrapper;
 import net.vulcandev.vulcancrates.gui.CratePreviewGUI;
 import net.vulcandev.vulcancrates.objects.Crate;
 import net.vulcandev.vulcancrates.objects.Prize;
@@ -96,8 +96,9 @@ public class CrateInteractListener implements Listener {
             return;
         }
 
-        CrateOpenEvent event = new CrateOpenEvent(player, crate, prize);
-        plugin.getServer().getPluginManager().callEvent(event);
+        if (plugin.shouldUseAPI()) {
+            VulcanAPIWrapper.fireCrateOpenEvent(player, crate, prize);
+        }
 
         if (prize.getCommands() != null) {
             for (String command : prize.getCommands()) {

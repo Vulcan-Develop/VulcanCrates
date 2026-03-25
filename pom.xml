@@ -6,7 +6,7 @@
 
     <groupId>net.vulcandev.vulcancrates</groupId>
     <artifactId>VulcanCrates</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <packaging>jar</packaging>
 
     <name>VulcanCrates</name>
@@ -118,6 +118,13 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>C:/Development/libs/VulcanLoader.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.vulcandev.vulcanapi</groupId>
+            <artifactId>VulcanAPI</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>C:/Development/libs/VulcanAPI.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.tr7zw</groupId>

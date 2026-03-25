@@ -6,3 +6,5 @@ depend:
   - VulcanLib
   - ProtocolLib
   - DecentHolograms
+softdepend:
+  - VulcanAPI

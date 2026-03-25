@@ -10,7 +10,7 @@ import net.xantharddev.vulcanlib.libs.DataUtils;
 import net.xantharddev.vulcanlib.libs.SerializableLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import net.vulcandev.vulcancrates.command.CrateCommands;
 import net.vulcandev.vulcancrates.listener.CrateInteractListener;
 import net.vulcandev.vulcancrates.manager.CrateManager;
@@ -42,6 +42,7 @@ public final class VulcanCrates extends VulcanPlugin {
     @Getter
     private KeyManager keyManager;
     private HologramManager hologramManager;
+    private boolean apiEnabled = false;
     private File locationFile;
     private static final Type LOCATIONS_TYPE = new TypeToken<Map<String, SerializableLocation>>(){}.getType();
 
@@ -65,6 +66,7 @@ public final class VulcanCrates extends VulcanPlugin {
         loadCrateLocations();
         playerDataManager.initialize();
         crateManager.loadAndRestoreChests();
+        initializeAPI();
 
         registerCommands();
         registerListeners();
@@ -107,6 +109,9 @@ public final class VulcanCrates extends VulcanPlugin {
     public void onSecureDisable() {
         if (hologramManager != null) hologramManager.removeAllHolograms();
         if (playerDataManager != null) playerDataManager.shutdown();
+        if (apiEnabled) {
+            net.vulcandev.vulcanapi.vulcancrates.VulcanCratesAPI.cleanup();
+        }
 
         saveCrateLocations(false);
 
@@ -117,6 +122,23 @@ public final class VulcanCrates extends VulcanPlugin {
     }
 
     public static VulcanCrates get() {return instance;}
+
+    public boolean shouldUseAPI() {
+        return apiEnabled;
+    }
+
+    private void initializeAPI() {
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("VulcanAPI");
+        if (plugin == null || !plugin.isEnabled()) {
+            Logger.log(this, "&cFailed to initialize VulcanAPI, please put the API on your server if you wish to use it.");
+            Logger.log(this, "&cDisabling API integration...");
+            return;
+        }
+
+        net.vulcandev.vulcanapi.vulcancrates.VulcanCratesAPI.initialize(this);
+        Logger.log(this, "VulcanAPI integration enabled.");
+        apiEnabled = true;
+    }
 
     public void loadCrateLocations() {
         Map<String, SerializableLocation> locations = DataUtils.loadFromJson(locationFile, LOCATIONS_TYPE, ConcurrentHashMap::new);
