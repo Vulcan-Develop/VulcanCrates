@@ -158,7 +158,7 @@ public class CrateCommands {
 
                             SimpleBlock simpleBlock = SimpleBlock.builder().build();
                             simpleBlock.setBlock(targetBlock.getLocation(), crate.getCustomModelData(),
-                                    MaterialDb.get(crate.getMaterial()));
+                                    MaterialDb.get(crate.getMaterial()), player.getFacing());
 
                             plugin.setCrateLocation(crate.getName(), location);
 

@@ -2,10 +2,10 @@ package net.vulcandev.vulcancrates.listener;
 
 import net.xantharddev.vulcanlib.libs.Colour;
 import net.xantharddev.vulcanlib.libs.SerializableLocation;
+import net.xantharddev.vulcanlib.libs.SoundUtil;
+import net.xantharddev.vulcanlib.libs.Utils;
 import net.xantharddev.vulcanlib.libs.material.MaterialDb;
 import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -134,29 +134,19 @@ public class CrateInteractListener implements Listener {
         Location center = loc.clone().add(0.5, 0.5, 0.5);
 
         if (crate.getOpenSound() != null && !crate.getOpenSound().isEmpty()) {
-            try {
-                Sound sound = Sound.valueOf(crate.getOpenSound().toUpperCase());
-                loc.getWorld().playSound(center, sound, crate.getOpenSoundVolume(), crate.getOpenSoundPitch());
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Invalid sound '" + crate.getOpenSound() + "' in crate '" + crate.getName() + "'");
-            }
+            SoundUtil.play(center, crate.getOpenSound(), crate.getOpenSoundVolume(), crate.getOpenSoundPitch());
         }
 
         if (crate.getOpenParticle() != null && !crate.getOpenParticle().isEmpty()) {
-            try {
-                Particle particle = Particle.valueOf(crate.getOpenParticle().toUpperCase());
-                loc.getWorld().spawnParticle(
-                        particle,
-                        center,
-                        crate.getOpenParticleCount(),
-                        crate.getOpenParticleOffsetX(),
-                        crate.getOpenParticleOffsetY(),
-                        crate.getOpenParticleOffsetZ(),
-                        crate.getOpenParticleSpeed()
-                );
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Invalid particle '" + crate.getOpenParticle() + "' in crate '" + crate.getName() + "'");
-            }
+            Utils.spawnParticle(
+                    center,
+                    crate.getOpenParticle(),
+                    crate.getOpenParticleCount(),
+                    crate.getOpenParticleOffsetX(),
+                    crate.getOpenParticleOffsetY(),
+                    crate.getOpenParticleOffsetZ(),
+                    crate.getOpenParticleSpeed()
+            );
         }
     }
 }
