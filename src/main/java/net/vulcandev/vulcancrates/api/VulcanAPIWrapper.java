@@ -13,9 +13,7 @@ import org.bukkit.entity.Player;
  * This class is only loaded when the API is enabled.
  */
 public final class VulcanAPIWrapper {
-
-    private VulcanAPIWrapper() {
-    }
+    private VulcanAPIWrapper() {}
 
     public static void fireCrateOpenEvent(Player player, Crate crate, Prize prize) {
         try {

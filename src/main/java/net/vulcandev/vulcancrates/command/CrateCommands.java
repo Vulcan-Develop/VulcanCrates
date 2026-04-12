@@ -12,6 +12,7 @@ import net.xantharddev.vulcanlib.command.args.CommandArgument;
 import net.xantharddev.vulcanlib.libs.Colour;
 import net.xantharddev.vulcanlib.libs.SerializableLocation;
 import net.xantharddev.vulcanlib.libs.SimpleBlock;
+import net.xantharddev.vulcanlib.libs.Utils;
 import net.xantharddev.vulcanlib.libs.material.MaterialDb;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -158,7 +159,7 @@ public class CrateCommands {
 
                             SimpleBlock simpleBlock = SimpleBlock.builder().build();
                             simpleBlock.setBlock(targetBlock.getLocation(), crate.getCustomModelData(),
-                                    MaterialDb.get(crate.getMaterial()), player.getFacing());
+                                    MaterialDb.get(crate.getMaterial()), Utils.getFacing(player));
 
                             plugin.setCrateLocation(crate.getName(), location);
 
