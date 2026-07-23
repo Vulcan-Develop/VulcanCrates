@@ -6,7 +6,7 @@
 
     <groupId>net.vulcandev.vulcancrates</groupId>
     <artifactId>VulcanCrates</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
     <packaging>jar</packaging>
 
     <name>VulcanCrates</name>
@@ -104,13 +104,6 @@
             <version>2.10.6</version>
             <scope>system</scope>
             <systemPath>C:/Development/libs/PlaceholderAPI-2.10.9.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.comphenix</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>C:/Development/libs/ProtocolLib.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.vulcandev.vulcanloader</groupId>

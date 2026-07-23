@@ -24,7 +24,6 @@ This plugin needs a few things to work:
 
 - **Spigot/Paper** 1.8.8 (WineSpigot compatible)
 - **VulcanLib** (included in libs folder)
-- **ProtocolLib** (included in libs folder)
 - **DecentHolograms** (for the floating text above crates)
 - **PlaceholderAPI** (optional, for placeholder support)
 
@@ -72,7 +71,6 @@ The compiled JAR will be in the `target` folder. Make sure you have the required
 
 **Dependencies:**
 - [DecentHolograms](https://github.com/DecentSoftware-eu/DecentHolograms) - For hologram displays
-- [ProtocolLib](https://github.com/dmulloy2/ProtocolLib) - Packet handling
 - [PlaceholderAPI](https://github.com/PlaceholderAPI/PlaceholderAPI) - Placeholder support
 - VulcanLib - Custom utility library
 
