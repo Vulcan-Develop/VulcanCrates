@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import me.plugin.libs.YamlDocument;
 import net.vulcandev.vulcanloader.loader.VulcanPlugin;
+import net.vulcandev.vulcanloader.security.LoaderSecurityToken;
 import net.xantharddev.vulcanlib.ConfigFile;
 import net.xantharddev.vulcanlib.Logger;
 import net.xantharddev.vulcanlib.libs.DataUtils;
@@ -13,7 +14,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import net.vulcandev.vulcancrates.command.CrateCommands;
 import net.vulcandev.vulcancrates.listener.CrateInteractListener;
+import net.vulcandev.vulcancrates.listener.CrateSpinListener;
 import net.vulcandev.vulcancrates.manager.CrateManager;
+import net.vulcandev.vulcancrates.manager.CrateOpenManager;
 import net.vulcandev.vulcancrates.manager.HologramManager;
 import net.vulcandev.vulcancrates.manager.KeyManager;
 import net.vulcandev.vulcancrates.manager.PlayerDataManager;
@@ -41,6 +44,8 @@ public final class VulcanCrates extends VulcanPlugin {
     private PlayerDataManager playerDataManager;
     @Getter
     private KeyManager keyManager;
+    @Getter
+    private CrateOpenManager crateOpenManager;
     private HologramManager hologramManager;
     private boolean apiEnabled = false;
     private File locationFile;
@@ -52,6 +57,7 @@ public final class VulcanCrates extends VulcanPlugin {
     @Override
     public void onSecureEnable() {
         instance = this;
+        LoaderSecurityToken.PluginSecurityVerifier.requireSecureLoading(this, "VulcanCrates");
 
         this.config = ConfigFile.createConfig(this, "config.yml");
         this.guiConfig = ConfigFile.createConfig(this, "gui.yml");
@@ -60,6 +66,7 @@ public final class VulcanCrates extends VulcanPlugin {
         this.crateManager = new CrateManager(this);
         this.playerDataManager = new PlayerDataManager(this, crateManager);
         this.keyManager = new KeyManager(this);
+        this.crateOpenManager = new CrateOpenManager(this);
         this.hologramManager = new HologramManager(this);
 
         crateManager.loadAllCrates();
@@ -82,8 +89,8 @@ public final class VulcanCrates extends VulcanPlugin {
     }
 
     private void registerListeners() {
-        CrateInteractListener crateInteractListener = new CrateInteractListener(this);
-        Bukkit.getPluginManager().registerEvents(crateInteractListener, this);
+        Bukkit.getPluginManager().registerEvents(new CrateInteractListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new CrateSpinListener(this), this);
     }
 
     private void registerPlaceholders() {
@@ -93,6 +100,7 @@ public final class VulcanCrates extends VulcanPlugin {
     }
 
     public void onReload() {
+        crateOpenManager.finishAll();
         hologramManager.removeAllHolograms();
 
         ConfigFile.reloadConfig(config);
@@ -107,6 +115,7 @@ public final class VulcanCrates extends VulcanPlugin {
 
     @Override
     public void onSecureDisable() {
+        if (crateOpenManager != null) crateOpenManager.finishAll();
         if (hologramManager != null) hologramManager.removeAllHolograms();
         if (playerDataManager != null) playerDataManager.shutdown();
         if (apiEnabled) {

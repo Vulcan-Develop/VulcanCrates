@@ -11,6 +11,10 @@ VulcanCrates lets you set up physical crates in your Minecraft world that player
 - **Physical Crate Placement** - Place crates anywhere in your world as actual chest blocks
 - **Hologram Support** - Floating text above each crate using DecentHolograms
 - **Preview GUI** - Let players see what's inside a crate before they open it
+- **Selectable Prize Rows** - Activate one or more rows, then choose one final reward from each row
+- **Configurable Row Controls** - Choose which inventory columns contain the row-selection panes
+- **Dynamic Vertical Reels** - Configure which inventory columns roll top-to-bottom during an opening
+- **Countdown And Prize Reel** - Configurable countdown audio and rolling animation before the reward is claimed
 - **Weighted Prize System** - Control how rare each prize is with customizable chances
 - **Key Management** - Give keys to individual players or broadcast them to everyone online
 - **Virtual And Physical Keys** - Run virtual, physical, or combined key usage with `keys.mode`
@@ -64,7 +68,7 @@ The hologram will appear automatically above the crate, and all locations are sa
 
 ## How It Works
 
-When you place a crate, it's stored as a physical chest block in the world with a hologram floating above it. The plugin tracks which chest belongs to which crate type. When a player interacts with it, the plugin checks if they have a key for that specific crate. If they do, it selects a random prize based on the weighted chances you configured and gives it to them.
+When you place a crate, it's stored as a physical chest block in the world with a hologram floating above it. The plugin tracks which chest belongs to which crate type. When a player right-clicks it, they activate winning rows with glass panes in the configured selector columns. Each active row costs one key, and the rows lock as soon as the countdown begins. When the configured columns stop, the player chooses one weighted reward from each active row.
 In `VIRTUAL` mode, key counts are tracked separately and saved to JSON files, so if a player has 5 keys and the server restarts, they'll still have those 5 keys when they come back. In `PHYSICAL` mode, keys are real tagged items that can be traded, stored, and consumed directly from a player's inventory. In `BOTH` mode, VulcanCrates accepts either type and consumes whichever type you prioritize in the config.
 
 The compiled JAR will be in the `target` folder. Make sure you have the required libraries in the `libs` folder before building.

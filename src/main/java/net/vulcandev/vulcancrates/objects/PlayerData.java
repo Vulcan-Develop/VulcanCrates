@@ -18,6 +18,13 @@ public class PlayerData {
     
     public Map<String, Integer> getCrateKeys() {return Collections.unmodifiableMap(crateKeys);}
 
+    public PlayerData copy() {
+        PlayerData copy = new PlayerData();
+        copy.crateKeys.putAll(crateKeys);
+        copy.totalCratesOpened = totalCratesOpened;
+        return copy;
+    }
+
     /**
      * Gets the number of keys the player has for a specific crate.
      * @param crateName the name of the crate

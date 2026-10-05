@@ -2,6 +2,7 @@ package net.vulcandev.vulcancrates.manager;
 
 import com.google.gson.reflect.TypeToken;
 import net.xantharddev.vulcanlib.libs.DataUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import net.vulcandev.vulcancrates.VulcanCrates;
 import net.vulcandev.vulcancrates.objects.PlayerData;
@@ -17,10 +18,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * Manages player data including crate key counts and statistics.
  */
 public class PlayerDataManager {
+    private static final long AUTOSAVE_INTERVAL_TICKS = 20L * 60L * 5L;
+
     private final VulcanCrates plugin;
     private final CrateManager crateManager;
     private final Map<UUID, PlayerData> playerData = new ConcurrentHashMap<>();
+    private final Object writeLock = new Object();
     private File dataFile;
+    private long queuedSaves;
+    private long latestWrittenSave;
 
     public PlayerDataManager(VulcanCrates plugin, CrateManager crateManager) {
         this.plugin = plugin;
@@ -36,6 +42,7 @@ public class PlayerDataManager {
         }
 
         loadPlayerData();
+        Bukkit.getScheduler().runTaskTimer(plugin, this::saveAllDataAsync, AUTOSAVE_INTERVAL_TICKS, AUTOSAVE_INTERVAL_TICKS);
     }
 
     public PlayerData getPlayerData(Player player) {
@@ -47,14 +54,36 @@ public class PlayerDataManager {
     }
 
     public void saveAllData() {
-        DataUtils.saveToJson(dataFile, playerData, false);
+        write(snapshot(), ++queuedSaves);
+    }
+
+    public void saveAllDataAsync() {
+        Map<UUID, PlayerData> snapshot = snapshot();
+        long save = ++queuedSaves;
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> write(snapshot, save));
+    }
+
+    private Map<UUID, PlayerData> snapshot() {
+        Map<UUID, PlayerData> snapshot = new HashMap<>(playerData.size());
+        for (Map.Entry<UUID, PlayerData> entry : playerData.entrySet()) {
+            snapshot.put(entry.getKey(), entry.getValue().copy());
+        }
+        return snapshot;
+    }
+
+    private void write(Map<UUID, PlayerData> snapshot, long save) {
+        synchronized (writeLock) {
+            if (save < latestWrittenSave) return;
+            latestWrittenSave = save;
+            DataUtils.saveToJson(dataFile, snapshot, false);
+        }
     }
 
     private void loadPlayerData() {
         if (!dataFile.exists()) {
             return;
         }
-        
+
         Type mapType = new TypeToken<Map<UUID, PlayerData>>() {}.getType();
         Map<UUID, PlayerData> loadedData = DataUtils.loadFromJson(dataFile, mapType, HashMap::new);
 

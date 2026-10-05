@@ -1,4 +1,4 @@
-config-version: 2 # Do not touch this
+config-version: 8 # Do not touch this
 
 # ================================
 #        Crates Configuration
@@ -14,6 +14,13 @@ keys:
   mode: "BOTH" # VIRTUAL, PHYSICAL, or BOTH
   default-give-mode: "VIRTUAL" # Used by /crate give and /crate giveall
   consume-priority: "PHYSICAL" # Used when mode is BOTH
+
+# Spin settings
+# Players choose active winning rows before starting the countdown.
+spin:
+  enabled: true # false = keys award a random prize instantly, with no menu
+  max-rows: 6 # Maximum active rows per opening, also capped by the selectable rows in gui.yml
+  keys-per-window: 6 # Maximum keys and reward rows used by one spin window; each selected row costs one key
 
 # Crate block settings
 crate-block:
@@ -41,5 +48,11 @@ messages:
   crate-block-placed: "%prefix% &7%crateType% crate successfully placed at your location."
   crate-removed: "%prefix% &7%crateType% crate location removed and chest destroyed."
   no-keys: "%prefix% &7You need a %crateType% %keyType% key to open this crate."
+  not-enough-keys: "%prefix% &7You need &6%required% &7%crateType% %keyType% key(s), but only have &6%available%&7."
+  no-prizes: "%prefix% &cThis crate has no prizes configured."
+  already-opening: "%prefix% &7Finish the crate you already have open first."
+  spin-select-required: "%prefix% &7Select at least one row first."
+  spin-row-limit: "%prefix% &7You can select up to &6%limit% &7row(s)."
+  spin-select-prompt: "%prefix% &7Pick &6one &7reward from each highlighted row. &8(%spins% active row(s))"
   physical-keys-dropped: "%prefix% &7Your inventory was full, so &6%amount% &7%crateType% physical key(s) were dropped at your feet."
   admin-test-prize: "&a[ADMIN TEST] &7You received the prize: &6%prizeName%"

@@ -1,26 +1,22 @@
 package net.vulcandev.vulcancrates.listener;
 
-import net.xantharddev.vulcanlib.libs.Colour;
+import net.xantharddev.vulcanlib.VulcanLib;
 import net.xantharddev.vulcanlib.libs.SerializableLocation;
-import net.xantharddev.vulcanlib.libs.SoundUtil;
-import net.xantharddev.vulcanlib.libs.Utils;
 import net.xantharddev.vulcanlib.libs.material.MaterialDb;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import net.vulcandev.vulcancrates.VulcanCrates;
-import net.vulcandev.vulcancrates.api.VulcanAPIWrapper;
 import net.vulcandev.vulcancrates.gui.CratePreviewGUI;
 import net.vulcandev.vulcancrates.objects.Crate;
-import net.vulcandev.vulcancrates.objects.Prize;
 
 /**
  * Listens for player interactions with crate blocks.
- * Left-click opens preview GUI, right-click attempts to open the crate.
+ * Left-click opens preview GUI and right-click opens the row selection menu.
  */
 public class CrateInteractListener implements Listener {
 
@@ -46,24 +42,14 @@ public class CrateInteractListener implements Listener {
         if(block.getType() != MaterialDb.get(crate.getMaterial())) return;
 
         event.setCancelled(true);
+        if (!VulcanLib.getInstance().isLegacy() && event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
             new CratePreviewGUI(plugin, player, crate).open();
             return;
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (!plugin.getKeyManager().canOpenCrate(player, crate)) {
-                String message = plugin.conf().getString("messages.no-keys",
-                                "%prefix% &7You need a %crateType% %keyType% key to open this crate.")
-                        .replace("%prefix%", plugin.conf().getString("messages.prefix"))
-                        .replace("%crateName%", crate.getName())
-                        .replace("%crateType%", crate.getDisplayName())
-                        .replace("%keyMode%", plugin.getKeyManager().getConfiguredKeyMode().getDisplayName())
-                        .replace("%keyType%", plugin.getKeyManager().getKeyTypeLabel(plugin.getKeyManager().getConfiguredKeyMode()));
-                player.sendMessage(Colour.colour(message));
-                return;
-            }
-            openCrate(player, crate);
+            plugin.getCrateOpenManager().open(player, crate);
         }
     }
 
@@ -75,78 +61,5 @@ public class CrateInteractListener implements Listener {
         }
 
         return null;
-    }
-
-    private void openCrate(Player player, Crate crate) {
-        Prize prize = crate.getRandomPrize();
-        if (prize == null) {
-            player.sendMessage(Colour.colour("&cError: No prizes configured for this crate!"));
-            return;
-        }
-
-        if (!plugin.getKeyManager().useKey(player, crate)) {
-            String message = plugin.conf().getString("messages.no-keys",
-                            "%prefix% &7You need a %crateType% %keyType% key to open this crate.")
-                    .replace("%prefix%", plugin.conf().getString("messages.prefix"))
-                    .replace("%crateName%", crate.getName())
-                    .replace("%crateType%", crate.getDisplayName())
-                    .replace("%keyMode%", plugin.getKeyManager().getConfiguredKeyMode().getDisplayName())
-                    .replace("%keyType%", plugin.getKeyManager().getKeyTypeLabel(plugin.getKeyManager().getConfiguredKeyMode()));
-            player.sendMessage(Colour.colour(message));
-            return;
-        }
-
-        if (plugin.shouldUseAPI()) {
-            VulcanAPIWrapper.fireCrateOpenEvent(player, crate, prize);
-        }
-
-        if (prize.getCommands() != null) {
-            for (String command : prize.getCommands()) {
-                String processedCommand = command.replace("%player%", player.getName());
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), processedCommand);
-            }
-        }
-
-        String playerMessage = plugin.conf().getString("messages.crate-rolled-reward")
-                .replace("%prefix%", plugin.conf().getString("messages.prefix"))
-                .replace("%prizeName%", prize.getName())
-                .replace("%crateType%", crate.getDisplayName());
-        player.sendMessage(Colour.colour(playerMessage));
-
-        if (prize.isAnnounce()) {
-            String announceMessage = plugin.conf().getString("messages.crate-rolled-reward-announce")
-                    .replace("%prefix%", plugin.conf().getString("messages.prefix"))
-                    .replace("%player%", player.getName())
-                    .replace("%prizeName%", prize.getName())
-                    .replace("%crateType%", crate.getDisplayName());
-            plugin.getServer().broadcastMessage(Colour.colour(announceMessage));
-        }
-
-        playEffects(player, crate);
-    }
-
-    private void playEffects(Player player, Crate crate) {
-        if (crate.getLocation() == null) return;
-        Location loc = crate.getLocation().getLocation();
-        if (loc == null || loc.getWorld() == null) return;
-
-        // Center the location on the block
-        Location center = loc.clone().add(0.5, 0.5, 0.5);
-
-        if (crate.getOpenSound() != null && !crate.getOpenSound().isEmpty()) {
-            SoundUtil.play(center, crate.getOpenSound(), crate.getOpenSoundVolume(), crate.getOpenSoundPitch());
-        }
-
-        if (crate.getOpenParticle() != null && !crate.getOpenParticle().isEmpty()) {
-            Utils.spawnParticle(
-                    center,
-                    crate.getOpenParticle(),
-                    crate.getOpenParticleCount(),
-                    crate.getOpenParticleOffsetX(),
-                    crate.getOpenParticleOffsetY(),
-                    crate.getOpenParticleOffsetZ(),
-                    crate.getOpenParticleSpeed()
-            );
-        }
     }
 }

@@ -1,8 +1,123 @@
-config-version: 1 # Do not touch this
+config-version: 7 # Do not touch this
 
 # ================================
 #        GUI Configuration
 # ================================
+
+# Crate Spin GUI
+# Players spend one key for each selected row, up to the configured window limit,
+# then choose one prize from every selected row after the vertical reels stop.
+crate-spin:
+  rows: 6
+  title: '&eOpening &8| %crate%'
+  rolling-columns: [2, 3, 4, 5, 6, 7, 8] # One-based inventory columns, from 1 to 9
+  selectable-rows: [0, 1, 2, 3, 4, 5] # Zero-based inventory rows
+
+  # Zero-based inventory slot. May be any slot inside the configured GUI size.
+  start-opening:
+    slot: 49
+    type: EMERALD_BLOCK
+    glowing: true
+    name: '&a&lSTART OPENING'
+    lore:
+      - '&7Active rows: &f%selected%'
+      - '&7Key cost: &f%cost%'
+      - ''
+      - '&eClick to start.'
+
+  selection:
+    columns: [1, 9] # One-based inventory columns used for the row-selection panes
+    unselected-row:
+      type: STAINED_GLASS_PANE
+      damage: 7
+      glowing: false
+      name: '&7Row %row% &8- &eClick to select'
+      lore:
+        - '&7Activate this row as a winning row.'
+        - '&7Active: &f%selected%&8/&f%max% &8| &7Keys: &f%keys%'
+    selected-row:
+      type: STAINED_GLASS_PANE
+      damage: 5
+      glowing: true
+      name: '&aRow %row% &8- &fSelected'
+      lore:
+        - '&7Click again to remove this row.'
+        - '&7Active: &f%selected%&8/&f%max% &8| &7Keys: &f%keys%'
+    locked-row:
+      type: STAINED_GLASS_PANE
+      damage: 5
+      glowing: true
+      name: '&aRow %row% &8- &fLocked'
+      lore:
+        - '&7This row is locked for the opening.'
+
+  countdown:
+    seconds: 3
+    item:
+      type: WATCH
+      glowing: true
+      name: '&eRolling in &6%seconds%&e...'
+      lore:
+        - '&7Your selected rows are locked in.'
+    sound:
+      sound: 'BLOCK_NOTE_BLOCK_HAT'
+      legacy-sound: 'NOTE_STICKS'
+      volume: 0.8
+      high-pitch: 1.8
+      low-pitch: 0.8
+
+  animation:
+    tick-interval: 2 # Ticks between scroll steps, lower is faster (20 ticks = 1 second)
+    base-steps: 26 # Scroll steps before the left-most column locks in
+    column-stagger: 2 # Extra steps each column runs after the column to its left
+
+  # Reroll a cell when that prize is already somewhere else in the same row.
+  # Ignored when a crate has fewer prizes than the number of rolling columns.
+  no-duplicates-per-row: true
+
+  # Appended to every item in an active winning row
+  claim-lore:
+    - ''
+    - '&e&lCLICK TO CLAIM'
+    - '&7Choose one reward from this row.'
+
+  # Appended to the item the player claimed
+  claimed-lore:
+    - ''
+    - '&a&lCLAIMED'
+
+  auto-close: true # Close the menu after every selected row has been claimed
+  close-delay: 40 # Ticks to wait before that close
+
+  # legacy-sound is used when the main name does not exist on the server's version (1.8 vs 1.9+)
+  spin-sound:
+    sound: 'UI_BUTTON_CLICK'
+    legacy-sound: 'CLICK'
+    volume: 0.35
+    pitch: 1.6
+  column-stop-sound:
+    sound: 'ENTITY_EXPERIENCE_ORB_PICKUP'
+    legacy-sound: 'ORB_PICKUP'
+    volume: 0.6
+    pitch: 1.4
+  finish-sound:
+    sound: 'ENTITY_PLAYER_LEVELUP'
+    legacy-sound: 'LEVEL_UP'
+    volume: 0.7
+    pitch: 1.2
+  claim-sound:
+    sound: 'ENTITY_ITEM_PICKUP'
+    legacy-sound: 'ITEM_PICKUP'
+    volume: 0.8
+    pitch: 1.5
+
+  # Slots outside the configured rolling columns
+  inactive-filler:
+    type: STAINED_GLASS_PANE
+    damage: 7
+    glowing: false
+    name: '&7'
+    lore: []
 
 # Crate Preview GUI
 crate-preview:

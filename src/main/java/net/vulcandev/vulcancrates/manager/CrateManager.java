@@ -2,6 +2,7 @@ package net.vulcandev.vulcancrates.manager;
 
 import net.xantharddev.vulcanlib.Logger;
 import net.xantharddev.vulcanlib.libs.SerializableLocation;
+import net.xantharddev.vulcanlib.libs.SimpleBlock;
 import net.xantharddev.vulcanlib.libs.material.MaterialDb;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -203,10 +204,8 @@ public class CrateManager {
         return prize;
     }
 
-    private void placeChestAtLocation(SerializableLocation sLocation) {
-        if (sLocation == null) return;
-        Location bukkitLoc = sLocation.getLocation();
-
+    private void placeCrateBlock(Crate crate) {
+        Location bukkitLoc = crate.getLocation().getLocation();
         if (bukkitLoc == null || bukkitLoc.getWorld() == null) return;
 
         if (!plugin.conf().getBoolean("crate-block.auto-place-on-set")) {
@@ -220,11 +219,9 @@ public class CrateManager {
             replaceableBlocks = Arrays.asList("AIR", "GRASS", "TALL_GRASS", "WATER", "LAVA");
         }
 
-        boolean canReplace = replaceableBlocks.contains(block.getType().name());
-
-        if (canReplace) {
-            String chestMaterial = plugin.conf().getString("crate-block.material");
-            block.setType(MaterialDb.get(chestMaterial));
+        if (replaceableBlocks.contains(block.getType().name())) {
+            SimpleBlock.builder().build().setBlock(bukkitLoc, crate.getCustomModelData(),
+                    MaterialDb.get(crate.getMaterial(), Material.CHEST), null);
         }
     }
 
@@ -262,30 +259,28 @@ public class CrateManager {
         if (crate != null) {
             SerializableLocation location = crate.getLocation();
             if (location != null) {
-                removeChestAtLocation(location);
+                removeCrateBlock(crate);
                 plugin.removeCrateLocation(crateName);
             }
         }
     }
 
-    private void removeChestAtLocation(SerializableLocation sLocation) {
-        if (sLocation == null) return;
-        Location bukkitLoc = sLocation.getLocation();
-
+    private void removeCrateBlock(Crate crate) {
+        Location bukkitLoc = crate.getLocation().getLocation();
         if (bukkitLoc == null || bukkitLoc.getWorld() == null) return;
 
         Block block = bukkitLoc.getBlock();
-        if (block.getType() == Material.CHEST) {
+        if (block.getType() == Material.CHEST || block.getType() == MaterialDb.get(crate.getMaterial(), Material.CHEST)) {
             block.setType(Material.AIR);
         }
     }
 
     public void loadAndRestoreChests() {
         if (!plugin.conf().getBoolean("crate-block.auto-restore-on-startup")) return;
-        
+
         for (Crate crate : crates.values()) {
             if (crate.getLocation() != null) {
-                placeChestAtLocation(crate.getLocation());
+                placeCrateBlock(crate);
             }
         }
     }

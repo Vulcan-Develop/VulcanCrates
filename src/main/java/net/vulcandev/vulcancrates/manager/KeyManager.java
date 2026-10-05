@@ -145,25 +145,43 @@ public class KeyManager {
     }
 
     public boolean canOpenCrate(Player player, Crate crate) {
-        return getUsableKeys(player, crate) > 0;
+        return canOpenCrate(player, crate, 1);
+    }
+
+    public boolean canOpenCrate(Player player, Crate crate, int amount) {
+        return amount > 0 && getUsableKeys(player, crate) >= amount;
     }
 
     public boolean useKey(Player player, Crate crate) {
+        return useKeys(player, crate, 1);
+    }
+
+    public boolean useKeys(Player player, Crate crate, int amount) {
+        if (!canOpenCrate(player, crate, amount)) {
+            return false;
+        }
+
         KeyMode keyMode = getConfiguredKeyMode();
+        int physicalAmount = 0;
+        int virtualAmount = 0;
         if (keyMode == KeyMode.PHYSICAL) {
-            return consumePhysicalKey(player, crate);
+            physicalAmount = amount;
+        } else if (keyMode == KeyMode.VIRTUAL) {
+            virtualAmount = amount;
+        } else if (getConsumePriorityMode() == KeyMode.PHYSICAL) {
+            physicalAmount = Math.min(amount, getPhysicalKeys(player, crate));
+            virtualAmount = amount - physicalAmount;
+        } else {
+            virtualAmount = Math.min(amount, getVirtualKeys(player, crate));
+            physicalAmount = amount - virtualAmount;
         }
 
-        if (keyMode == KeyMode.VIRTUAL) {
-            return consumeVirtualKey(player, crate);
-        }
+        consumePhysicalKeys(player, crate, physicalAmount);
+        consumeVirtualKeys(player, crate, virtualAmount);
 
-        KeyMode consumePriority = getConsumePriorityMode();
-        if (consumePriority == KeyMode.PHYSICAL) {
-            return consumePhysicalKey(player, crate) || consumeVirtualKey(player, crate);
-        }
-
-        return consumeVirtualKey(player, crate) || consumePhysicalKey(player, crate);
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        playerData.setTotalCratesOpened(playerData.getTotalCratesOpened() + amount);
+        return true;
     }
 
     public KeyGrantResult giveConfiguredKeys(Player player, Crate crate, int amount) {
@@ -218,14 +236,13 @@ public class KeyManager {
         return new KeyGrantResult(KeyMode.VIRTUAL, amount, playerData.getKeys(crate.getName()), 0);
     }
 
-    private boolean consumeVirtualKey(Player player, Crate crate) {
-        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
-        if (!playerData.canOpenCrate(crate.getName())) {
-            return false;
+    private void consumeVirtualKeys(Player player, Crate crate, int amount) {
+        if (amount <= 0) {
+            return;
         }
 
-        playerData.useKey(crate.getName());
-        return true;
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
+        playerData.addKeys(crate.getName(), -amount);
     }
 
     private KeyGrantResult givePhysicalKeys(Player player, Crate crate, int amount) {
@@ -256,18 +273,21 @@ public class KeyManager {
         return new KeyGrantResult(KeyMode.PHYSICAL, amount, getPhysicalKeys(player, crate), droppedAmount);
     }
 
-    private boolean consumePhysicalKey(Player player, Crate crate) {
+    private void consumePhysicalKeys(Player player, Crate crate, int amount) {
+        if (amount <= 0) {
+            return;
+        }
+
         PlayerInventory inventory = player.getInventory();
         int heldSlot = inventory.getHeldItemSlot();
         ItemStack mainHand = inventory.getItem(heldSlot);
         if (isPhysicalKey(mainHand, crate)) {
             assert mainHand != null;
-            decreaseStack(inventory, heldSlot, mainHand);
-            return true;
+            amount = decreaseStack(inventory, heldSlot, mainHand, amount);
         }
 
         ItemStack[] contents = inventory.getContents();
-        for (int i = 0; i < contents.length; i++) {
+        for (int i = 0; i < contents.length && amount > 0; i++) {
             if (i == heldSlot) {
                 continue;
             }
@@ -277,16 +297,15 @@ public class KeyManager {
                 continue;
             }
 
-            decreaseStack(inventory, i, item);
-            return true;
+            amount = decreaseStack(inventory, i, item, amount);
         }
-
-        return false;
     }
 
-    private void decreaseStack(PlayerInventory inventory, int slot, ItemStack item) {
-        int updatedAmount = item.getAmount() - 1;
+    private int decreaseStack(PlayerInventory inventory, int slot, ItemStack item, int amount) {
+        int consumed = Math.min(item.getAmount(), amount);
+        int updatedAmount = item.getAmount() - consumed;
         inventory.setItem(slot, updatedAmount <= 0 ? null : withAmount(item, updatedAmount));
+        return amount - consumed;
     }
 
     private ItemStack withAmount(ItemStack item, int amount) {
