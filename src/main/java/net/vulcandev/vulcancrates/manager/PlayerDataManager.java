@@ -1,6 +1,7 @@
 package net.vulcandev.vulcancrates.manager;
 
 import com.google.gson.reflect.TypeToken;
+import net.xantharddev.vulcanlib.async.VulcanTasks;
 import net.xantharddev.vulcanlib.libs.DataUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,6 +28,7 @@ public class PlayerDataManager {
     private File dataFile;
     private long queuedSaves;
     private long latestWrittenSave;
+    private boolean saveScheduled;
 
     public PlayerDataManager(VulcanCrates plugin, CrateManager crateManager) {
         this.plugin = plugin;
@@ -60,7 +62,17 @@ public class PlayerDataManager {
     public void saveAllDataAsync() {
         Map<UUID, PlayerData> snapshot = snapshot();
         long save = ++queuedSaves;
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> write(snapshot, save));
+        VulcanTasks.async(plugin, () -> write(snapshot, save));
+    }
+
+    // A used virtual key must be on disk before a crash can bring it back after its prize was paid; one save a second at most.
+    public void saveSoon() {
+        if (saveScheduled) return;
+        saveScheduled = true;
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            saveScheduled = false;
+            saveAllDataAsync();
+        }, 20L);
     }
 
     private Map<UUID, PlayerData> snapshot() {

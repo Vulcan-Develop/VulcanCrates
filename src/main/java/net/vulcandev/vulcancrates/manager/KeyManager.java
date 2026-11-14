@@ -178,6 +178,7 @@ public class KeyManager {
 
         consumePhysicalKeys(player, crate, physicalAmount);
         consumeVirtualKeys(player, crate, virtualAmount);
+        if (virtualAmount > 0) plugin.getPlayerDataManager().saveSoon();
 
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player);
         playerData.setTotalCratesOpened(playerData.getTotalCratesOpened() + amount);
